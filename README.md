@@ -86,7 +86,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     beijing,...
 
 此外还有一些透明的辅助工具方法，被以上这些暴露出去的使用方法所调用。
-统一归纳在util对象下实现:
+统一归纳在util对象下实现: 
     bnplus   大数加法
     bnminus  大数减法
     bnmultip 大数乘法
