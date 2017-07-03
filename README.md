@@ -15,7 +15,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 ----
 ## 逻辑结构：
 
-###定义了4种时间模型，包括3种通用模型和1种自然语言模型,模型精确到毫秒
+### 定义了4种时间模型，包括3种通用模型和1种自然语言模型,模型精确到毫秒
 
 1.objts:
 {
@@ -44,7 +44,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 2010-10-10 10:12:12 
 2010-10-10 10:12:12:233
 
-###定义了几类方法和一个角度，来操作和处理上述的四种模型
+### 定义了几类方法和一个角度，来操作和处理上述的四种模型
 
 1.获取和重置当前时间： 
 getnowts
