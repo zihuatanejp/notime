@@ -94,3 +94,4 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     bnmod    大数取余
     bnisnega    判断是否是负数
     bnabscomp   比较两数的绝对值大小
+ 
