@@ -7,11 +7,11 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 
 ## 使用：
 
-
+----
 ## 方法索引：
 
 
-
+----
 ## 逻辑结构：
 
 定义了4种时间模型，包括3种通用模型和1种自然语言模型,模型精确到毫秒
