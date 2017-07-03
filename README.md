@@ -17,16 +17,16 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 
 ### 定义了4种时间模型，包括3种通用模型和1种自然语言模型,模型精确到毫秒
 
-1.objts:
-{
-  yy:num,
-	mm:num,
-	dd:num,
-	hh:num,
-	mi:num,
-	ss:num,
-	ms:num
-}
+    1.objts:
+    {
+      yy:num,
+	    mm:num,
+	    dd:num,
+	    hh:num,
+	    mi:num,
+	    ss:num,
+	    ms:num
+    }
 
 由于js使用53个2进制为存储整数部分，使用IEEE754双精度浮点数标准，所以num的范围为js最大的安全整数范围：即： Number.MAX_SAFE_INTEGER +-/9007199254740991   （ (2^53)-1 ）
 
