@@ -22,11 +22,11 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     {
       yy:num,
       mm:num,
-	    dd:num,
-	    hh:num,
-	    mi:num,
-	    ss:num,
-	    ms:num
+      dd:num,
+      hh:num,
+      mi:num,
+      ss:num,
+      ms:num
     }
 
 
