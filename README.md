@@ -7,6 +7,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 
 ## 使用：
 
+详情参见utest.js
 
 ----
 ## 方法索引：
