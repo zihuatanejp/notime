@@ -12,6 +12,47 @@ module.exports = {
 
 // 大数加法
 function bnplus(a1,a2){
+
+	//支持负数运算
+	//若一个数为负数,则用大数减小数
+	//若两数均为负数,则去掉负号正常运算,最后结果追加负号
+	var negaflag = 0;
+	var a1nega = false;
+	var a2nega = false;
+	if( bnisnega(a1) ){
+		++negaflag;
+		a1 = a1.slice(1);
+		a1nega = true;
+	}
+	if( bnisnega(a2) ){
+		++negaflag;
+		a2 = a2.slice(1);
+		a2nega = true;
+	}
+
+	if(negaflag == 1){
+		if( bnabscomp(a1,a2) =='eq' ){
+			return '0';
+		}
+		if (bnabscomp(a1,a2) =='yes'){
+			//若a1大且a1是负数则结果加上负号
+			if(a1nega){
+				return '-'+bnminus(a1,a2);
+			}
+			else{
+				return bnminus(a1,a2);
+			}
+		}
+		if( bnabscomp(a1,a2)=='no' ){
+			if(a1nega){
+				return bnminus(a2,a1);
+			}
+			else{
+				return '-'+bnminus(a2,a1);
+			}
+		}
+	}
+
 	if ( a1.length > a2.length ){
 		var tp1 = a1;
 		a1 = a2;
@@ -79,17 +120,67 @@ function bnplus(a1,a2){
 		})();
 	}
 	})();
-	return rstr;
+
+	//若两个皆为负数
+	if(negaflag==2){
+		return '-'+rstr;
+	}
+	else{
+		return rstr;
+	}	
 }
 
 
 //大数减法
 function bnminus(a1,a2) {
 
-	//两数绝对值相等,则不用后续计算
-	if( bnabscomp(a1,a2) =='eq'){
-		return '0';
+	// //两数绝对值相等,则不用后续计算
+	// if( bnabscomp(a1,a2) =='eq'){
+	// 	return '0';
+	// }
+	var addnega = false; //是否最终结果加负号
+	var negaflag = 0;
+	var a1nega = false;
+	var a2nega = false;
+	if( bnisnega(a1) ){
+		++negaflag;
+		a1 = a1.slice(1);
+		a1nega = true;
 	}
+	if( bnisnega(a2) ){
+		++negaflag;
+		a2 = a2.slice(1);
+		a2nega = true;
+	}
+
+	// 都为正数 有可能减出负数
+	if(negaflag==0){
+	 	if( bnabscomp(a1,a2)=='eq' ){
+	 		return '0';
+	 	}
+	 	if( bnabscomp(a1,a2)=='no' ){
+	 		return '-'+bnminus(a2,a1);
+	 	}
+	}
+
+	// 有一个数为负数
+	if(negaflag ==1){
+		return '-'+bnplus(a1,a2);
+	}
+
+	// 都为负数 
+	if( negaflag ==2 ){
+		if( bnabscomp(a1,a2)=='eq' ){
+			return '0';
+		}
+		if( bnabscomp(a1,a2)=='yes' ){
+			return '-'+bnminus(a1,a2);
+		}
+		if( bnabscomp(a1,a2)=='no' ){
+			return bnminus(a2,a1);
+		}
+	}
+	
 	var ar1 = a1.split('');
 	var ar2 = a2.split('');
 	var carryflag = 0; //退位标志

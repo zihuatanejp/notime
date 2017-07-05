@@ -72,3 +72,51 @@ console.log(tp17);  // should 1  res:001
 
 */
 
+// 负数测试
+
+
+// var tp19 = ut.bnplus('5','-5');
+// console.log(tp19);  // should 0  ok
+
+// var tp20 = ut.bnplus('-5','5');
+// console.log(tp20);  // should 0  ok
+
+// var tp18 = ut.bnplus('10','-5');
+// console.log(tp18);  // should 5  
+
+// var tp21 = ut.bnplus('-10','5');
+// console.log(tp21);  // should -5  
+
+// var tp22 = ut.bnplus('5','-10');
+// console.log(tp22);  // should -5  
+
+// var tp21 = ut.bnplus('-5','10');
+// console.log(tp21);  // should 5  
+
+// var tp22 = ut.bnplus('-5','-10');
+// console.log(tp22);  // should -15  
+
+// var tp23 = ut.bnplus('5','10');
+// console.log(tp23);  // should 15  
+
+// var tp24 = ut.bnminus('5','10');
+// console.log(tp24);  // should -5  
+
+// var tp25 = ut.bnminus('-5','10');
+// console.log(tp25);  // should -15
+
+// var tp26 = ut.bnminus('5','-10');
+// console.log(tp26);  // should -15 
+
+// var tp27 = ut.bnminus('5','-5');
+// console.log(tp27);  // should -10  
+
+// var tp28 = ut.bnminus('-10','-5');
+// console.log(tp28);  // should -5  
+
+// var tp29 = ut.bnminus('-5','-10');
+// console.log(tp29);  // should 5 
+
+// var tp30 = ut.bnminus('-5','-5');
+// console.log(tp30);  // should 0   
+
