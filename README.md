@@ -8,14 +8,54 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 ----
 
 ## 使用：
+```javascript
+    var nt = require('notime');  // node require进去
+    
+    //获取当前时间
+    nt.getnowts();
+    //得到一个json对象如下：
+    /*
+    {}
+    */
+```
 
 详情参见utest.js
 
 ----
 ## 方法索引：
 
+* [getnowts :获取当前时间](#getnowts)
+* [resetnow ：重置当前时间](#resetnow)
+* 时间模型转换方法
+  * [convts :时间模型转换方法 自然语言转换为通用时间模型](convts)
+  * [strtstotext :时间模型转换方法 strts格式化为自然语言](#strtstotext)
+  * [objtstotext :同上，模型转换方法之一](#objtstotext)
+  * [numtstotext :同上](#numtstotext)
+  * [objtostrts](#objtostrts)
+  * [strtoobjts](#strtoobjts)
+  * [numtostrts](#numtostrts)
+* 时间的操作与运算
+  * [timeplus :strts + 一定毫秒数](#timeplus)
+  * [timeminus :strts - 一定毫秒数](#timeminus)
+  * [timespace :得到两段strts之间相距的毫秒数](#timespace)
+  * [msconv :将一定毫秒数转化为多少年多少月...的形式](#msconv)
+  * [msconvto ：将一定毫秒数转化多少年或多少天之类的形式](#msconvto)
+  * [rolltoms ：将多少年，多少月之类的形式转化为一定毫秒数](#rolltoms)
+* 设置自然语言的时区角度
+  * [tzset :用来设置24个时区中的某个](#tzset)
+  * [tzmiset :用来设置与GMT时间的偏移分钟数](#tzmiset)
+  * [tzcityset :用来设置当前采用全球某个主要城市的时区](#tzcityset)
+* [util :辅助工具类对象](#util)
+  * [bnplus ：大数加法](#bnplus)
+  * [bnminus :大数减法](#bnminus)
+  * [bnmultip :大数乘法](#bnmultip)
+  * [bndivis :大数除法](#bndivis)
+  * [bnmod :大数取余](#bnmod)
+  * [bnisnega ：判断是否为负数](#bnisnega)
+  * [bnabscomp ：比较两数绝对值大小](#bnabscomp)
 
 ----
+
 ## 逻辑结构：
 
 ### 定义了4种时间模型，包括3种通用模型和1种自然语言模型,模型精确到毫秒
@@ -84,7 +124,9 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     timeplus: 处理一段时间的计算 strts + 一定毫秒数 返回strts对象
     timeminus: 处理一段时间的计算 strts - 一定毫秒数 返回strts对象
     timespace: 处理一段时间的计算 strts与strts 返回它们之间相距的时间距离毫秒数
-    timeconv:  处理一段时间的计算 将一定毫秒数 转化为多少年多少月..几时几分几秒 返回 一个对象
+    msconv:  处理一段时间的计算 将一定毫秒数 转化为多少年多少月..几时几分几秒 返回 一个对象
+    msconvto: 处理一段时间的计算 将一定毫秒数 转化为xx天 或者 xx秒等
+    rolltoms: 处理一段时间的计算 将多少天 多少小时 转化为多少毫秒数
 
 
 5.一个角度
@@ -109,3 +151,8 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     bnisnega    判断是否是负数
     bnabscomp   比较两数的绝对值大小
  
+---
+
+## API
+
+### getnowts
