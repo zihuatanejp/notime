@@ -164,9 +164,9 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 用来重置当前时间，一旦设定该项后，会启用内置的定时器，每隔500ms更新一次getnowts获取到的当前时间,默认getnowts获取当前时间使用的js的new Date();
 若调用过该方法重置后，则会使用重置的时间为起点自动更新当前时间
 
------
-### convts
 
+### convts
+-
 
 用来将输入的，或者人类便于理解的自然语言格式的时间字符串转化为3种通用的时间模型（strts,numts,objts）
 支持以下4种格式的字符串
