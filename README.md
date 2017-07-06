@@ -156,3 +156,10 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 ## API
 
 ### getnowts
+
+方法描述：用来获取当前时间，返回1个json对象，里面有3种格式的当前时间（strts,numts,objts）
+
+### resetnow
+
+用来重置当前时间，一旦设定该项后，会启用内置的定时器，每隔500ms更新一次getnowts获取到的当前时间,默认getnowts获取当前时间使用的js的new Date();
+若调用过该方法重置后，则会使用重置的时间为起点自动更新当前时间
