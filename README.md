@@ -165,6 +165,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 若调用过该方法重置后，则会使用重置的时间为起点自动更新当前时间
 
 ### convts
+***
 
 用来将输入的，或者人类便于理解的自然语言格式的时间字符串转化为3种通用的时间模型（strts,numts,objts）
 支持以下4种格式的字符串
