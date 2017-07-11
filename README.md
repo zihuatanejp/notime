@@ -63,17 +63,19 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 1.objts:
 
     {
-      yy:num,
-      mm:num,
-      dd:num,
-      hh:num,
-      mi:num,
-      ss:num,
-      ms:num
+      yy:numstr,
+      mm:numstr,
+      dd:numstr,
+      hh:numstr,
+      mi:numstr,
+      ss:numstr,
+      ms:numstr
     }
 
 
-由于js使用53个2进制为存储整数部分，使用IEEE754双精度浮点数标准，所以num的范围为js最大的安全整数范围：即： Number.MAX_SAFE_INTEGER +-/9007199254740991   （ (2^53)-1 ）
+由于js使用53个2进制为存储整数部分，使用IEEE754双精度浮点数标准，所以数字的范围为js最大的安全整数范围：即： Number.MAX_SAFE_INTEGER +-/9007199254740991   （ (2^53)-1 ）
+
+但这里并没有这个限制，因为键值是数字的字符串形式 其中mm的范围是01-12  dd的范围是01-31
 
 
 2.strts
@@ -84,6 +86,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 
 3.numts
 纯数字，同strts一样表示毫秒数时间戳，但有范围，即+-/9007199254740991  （285,616.414年+1970） 约28万年
+自1970年1月1日加上或减去273785年的时间
 
 
 4.自然语言模型
