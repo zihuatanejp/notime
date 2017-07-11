@@ -304,4 +304,12 @@ objtostrts的反向转换
 参数： 'beijing'/...  //主要城市的拼音或英文名
 参数支持范围如下:
 
-    beijing(北京),...
+    beijing(中国-北京+8) 480,  hongkong(中国-香港+8) 480, Honolulu(美国-夏威夷檀香山-10) -600, alaska(美国-阿拉斯加-8) -480,
+    sanfrancisco(美国-旧金山-8) -480, 
+    hene(越南-河内+7)   420
+huzhiming(越南-胡志明+7) 420
+dubai(迪拜+4) 240
+kabul(阿富汗-卡布+4) 240
+cairo(埃及-开罗+2) 120
+seoul (韩国-首尔汉城+9) 540
+moscow(俄罗斯-莫斯科+3) 180
