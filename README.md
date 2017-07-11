@@ -138,7 +138,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     tzcityset  设置以某个城市拼写所在的时区为准，
 支持以下城市：
 
-[tzcityset :支持城市](#tzcityset)
+[tzcityset :查看支持城市](#tzcityset)
 
 此外还有一些透明的辅助工具方法，被以上这些暴露出去的使用方法所调用。
 统一归纳在util对象下实现: 
