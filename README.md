@@ -138,7 +138,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     tzcityset  设置以某个城市拼写所在的时区为准，
 支持以下城市：
 
-    beijing,...
+    [tzcityset :支持城市](#tzcityset)
 
 此外还有一些透明的辅助工具方法，被以上这些暴露出去的使用方法所调用。
 统一归纳在util对象下实现: 
@@ -305,11 +305,5 @@ objtostrts的反向转换
 参数支持范围如下:
 
     beijing(中国-北京+8) 480,  hongkong(中国-香港+8) 480, Honolulu(美国-夏威夷檀香山-10) -600, alaska(美国-阿拉斯加-8) -480,
-    sanfrancisco(美国-旧金山-8) -480, 
-    hene(越南-河内+7)   420
-huzhiming(越南-胡志明+7) 420
-dubai(迪拜+4) 240
-kabul(阿富汗-卡布+4) 240
-cairo(埃及-开罗+2) 120
-seoul (韩国-首尔汉城+9) 540
-moscow(俄罗斯-莫斯科+3) 180
+    sanfrancisco(美国-旧金山-8) -480,     henei(越南-河内+7)   420, huzhiming(越南-胡志明+7) 420, dubai(迪拜+4) 240, 
+    kabul(阿富汗-卡布+4) 240, cairo(埃及-开罗+2) 120, seoul (韩国-首尔汉城+9) 540, moscow(俄罗斯-莫斯科+3) 180
