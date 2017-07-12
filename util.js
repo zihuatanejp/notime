@@ -349,13 +349,13 @@ function bnmultip(a1,a2){
 function bndivis(a1,a2) {
 	var comp = bnabscomp(a1,a2); 
 	if(comp=='no'){
-		return false;
+		return '0';
 	}
 	if(comp =='eq'){
 		return '1';
 	}
 	var flag = true; 
-	var cnt = 0;
+	var cnt = '0';
 	var tp; // 减去后的结果值,临时变量
 	while(flag){
 		// 判断第一次 和以后的许多次
@@ -366,7 +366,7 @@ function bndivis(a1,a2) {
 			tp = bnminus(tp,a2);
 		}
 		
-		++cnt;
+		cnt = bnplus(cnt,'1');
 		//减去后比较是否已小于，小于则跳出，否则进下一次
 		if( bnabscomp(tp,a2) == 'no' ){
 			flag = false;
@@ -379,10 +379,10 @@ function bndivis(a1,a2) {
 function bnmod(a1,a2) {
 	var comp = bnabscomp(a1,a2); 
 	if(comp=='no'){
-		return false;
+		return a1;
 	}
 	if(comp =='eq'){
-		return '1';
+		return '0';
 	}
 	var flag = true;
 	var tp; // 减去后的结果值,临时变量

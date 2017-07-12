@@ -3,6 +3,14 @@
 var nt = require('./notime');
 var ut = nt.util;
 
+
+console.log( nt.msconvto('1499854680007','dd') );
+console.log( nt.msconv('1499854680007') );
+// console.log( nt.msconv('7124123123600800') );
+// console.time('a');
+// console.log( nt.msconvto('64123123600800','dd') );
+// console.timeEnd('a');
+
 // var tp1 = nt.util.bnplus('11111111111111111','99999999999999988888888');
 // console.log(tp1);
 
@@ -120,3 +128,6 @@ console.log(tp17);  // should 1  res:001
 // var tp30 = ut.bnminus('-5','-5');
 // console.log(tp30);  // should 0   
 
+// var tp31 = ut.bnplus('0','1');
+// tp31 = ut.bnplus(tp31,'1');
+// console.log(tp31);
