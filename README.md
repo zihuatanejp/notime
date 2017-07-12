@@ -270,7 +270,7 @@ objtostrts的反向转换
 
 参数2： 'yy' || 'mm' || 'dd' || 'hh' || 'mi' || 'ss'
 
-返回： 如：{cnt:'50',ret:'xxx'}  // cnt 代表多少数量的该单位 ret代表该单位后的余数毫秒数
+返回： 如：{cnt:'50',ret:'xxx',code:'yes'}  // cnt 代表多少数量的该单位 ret代表该单位后的余数毫秒数  code:yes/no 是否成功
 
 
 ### rolltoms
