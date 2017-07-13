@@ -4,8 +4,12 @@ var nt = require('./notime');
 var ut = nt.util;
 
 
-console.log( nt.msconvto('1499854680007','dd') );
-console.log( nt.msconv('1499854680007') );
+console.log(nt.getnowts());
+// console.log( nt.strtoobjts('1499854680007') );
+
+// console.log( ut.bnmod('3500','3500') );
+// console.log( nt.msconvto('1499854680007','dd') );
+// console.log( nt.msconv('1499854680007') );
 // console.log( nt.msconv('7124123123600800') );
 // console.time('a');
 // console.log( nt.msconvto('64123123600800','dd') );

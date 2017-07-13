@@ -48,25 +48,273 @@ function getnowts() {
 	var res = {};
 	res.strts = md;
 	res.numts = parseInt(md);
-	var obj = msconvto(md,'dd');
+	var obj = strtoobjts(md);
+	res.objts = obj;
 	return res;
 }
 
 
-function strtoobjts(ts) {
-	var obj = msconvto(ts,'dd');
+function strtoobjts(ts) {  
+	var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
+	var obj = msconvto(ts,'dd'); 
 	var cnt = obj.cnt;
 	var ret = obj.ret;
+	var tp1,tp2,tp3,tp4,tp5,tp6,tp7,tp8,tp9,tp10,tp11,tp12;
 	//不足1天
 	if(cnt == '0'){
-
+		res.yy = '1970';
+		res.mm = '01';
+		res.dd = '01';
+		
+		tp11 = shifenmiao(ret);
+		res.hh = tp11.hh;
+		res.mi = tp11.mi;
+		res.ss = tp11.ss;
+		res.ms = tp11.ms;
 	}
 	//小于1年 大小月
-	if( ut.bnabscomp(cnt,'365')=='no' ){
-
+	if( ut.bnabscomp(cnt,'366')=='no' ){
+		tp1 = daxiaoyueri(cnt,false,false);
+		res.yy = '1970';
+		res.mm = tp1.mm;
+		res.dd = tp1.dd;
+		
+		tp11 = shifenmiao(ret);
+		res.hh = tp11.hh;
+		res.mi = tp11.mi;
+		res.ss = tp11.ss;
+		res.ms = tp11.ms;
 	}
+
 	//大于1年 四年一闰年 2月29日 第一次闰年在1972年
 	//每3500年再减一日 第一次减日在4500年
+	if( ut.bnabscomp(cnt,'365')=='yes' ){ 
+		var flag = true;
+		var yyms = '31536000000'; //加上的1年的毫秒数,有可能闰月
+		tp1 = '0'; //累加的年份毫秒数
+		tp2 = '0'; //累加的年数
+		tp3 = '1970';//当前的年份
+		tp4 = '0'; //每四年重置一次,检查是否闰年
+		while(flag){
+			//每次进来重置为365天 //重置闰年 减日标识
+			yyms = '31536000000';
+			tp9 = false;//是否闰年
+			tp10 = false;//是否减日
+
+			//非整百数每四年闰一天
+			if( iszhenbai(tp3)=='no' ){ 
+				if( tp4=='4' ){
+					yyms = '31622400000';
+					tp9 = true;
+				}
+			}
+			//整百数每400年闰1天
+			if( iszhenbai(tp3)=='yes' ){ 
+				if( ut.bnmod(tp3,'400')=='0' ){
+					yyms = '31622400000'; 
+					tp9 = true;
+				}
+			}			
+			//1972年闰1天
+			if(tp2=='2'){
+				yyms = '31622400000'; 
+				tp4 ='0';
+				tp9 = true;
+			}
+			//3500年减1日
+			if( ut.bnabscomp(tp2,'3499')=='yes' ){
+				if( ut.bnmod(tp1,'3500') == '0' ){
+					yyms = ut.bnminus(yyms,'86400000');
+					tp10 = true;
+				}
+			}
+			tp8 = tp1;// 最后一次加前的整数年
+			tp1 = ut.bnplus(tp1,yyms);
+
+			if( ut.bnabscomp(tp1, ut.bnplus(ts,'1') ) =='no' ){
+				tp2 = ut.bnplus(tp2,'1');
+				tp3 = ut.bnplus(tp3,'1');
+				tp4 = ut.bnplus(tp4,'1'); 
+				if(tp4== '5'){
+					tp4 = '0';
+				} 
+			}
+			else{
+				flag = false;
+			}
+		}
+
+		res.yy = tp3; // 年 
+		tp5 = ut.bnminus(ts,tp8);// 不足1年的毫秒数
+		if(tp5 == '0'){
+			res.mm = '12';
+			res.dd = '31';
+		}
+		else{
+			tp6 = msconvto(tp5,'dd'); //不足1年的部分有多少天
+			tp7 = daxiaoyueri(tp6.cnt,tp9,tp10);
+			res.mm = tp7.mm;
+			res.dd = tp7.dd;
+
+			tp11 = shifenmiao(tp6.ret);
+			res.hh = tp11.hh;
+			res.mi = tp11.mi;
+			res.ss = tp11.ss;
+			res.ms = tp11.ms;
+		}
+		
+	}
+
+	// 判断是否整百
+	function iszhenbai(str) {
+		if(str.length<3){
+			return 'no';
+		}
+		if( str.slice(-2) == '00' ){
+			return 'yes';
+		}
+		return 'no';
+	}
+
+	// 处理时分秒
+	function shifenmiao(tss) {
+		var r = {hh:'00',mi:'00',ss:'00',ms:'000'};
+		var tp1,tp2,tp3,tp4,tp5;
+		if(tss=='0'){
+			return r;
+		}
+		tp1 = msconvto(tss,'hh');
+		r.hh = tp1.cnt;
+		if(r.hh.length<2){
+			r.hh = '0'+r.hh;
+		}
+		tp2 = msconvto(tp1.ret,'mi');
+		r.mi = tp2.cnt;
+		if(r.mi.length<2){
+			r.mi = '0'+r.mi;
+		}
+		tp3 = msconvto(tp2.ret,'ss');
+		r.ss = tp3.cnt;
+		if(r.ss.length<2){
+			r.ss = '0'+r.ss;
+		}
+		r.ms = tp3.ret;
+		if(r.ms.length==1){
+			r.ms = '00'+r.ms;
+		}
+		if(r.ms.length==2){
+			r.ms = '0'+r.ms;
+		}
+		return r;
+	}
+
+	// 处理月日
+	function daxiaoyueri(day,isleapyear,isjianri) {
+		var d = parseInt(day);
+		var r = {mm:'00',dd:'00'};
+		//每四年2月闰一日 28+1
+		//每3500年2月减1日 28-1
+		var leap = 0;
+		if(isleapyear){ ++leap; }
+		if(isjianri){ --leap; } 
+
+		// 1月
+		if(d<32){
+			r.mm = '01';
+			if(day.length<2){ day = '0'+day; }
+			r.dd = day.toString();
+		}
+		// 2月
+		if( (d>31)&&(d<(60+leap)) ){
+			r.mm = '02';
+			r.dd = (d-31).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 3月
+		if( (d>(59+leap)) && (d<(91+leap)) ){
+			r.mm = '03';
+			r.dd = (d-(59+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 4月
+		if( (d>(90+leap)) && (d<(121+leap)) ){
+			r.mm = '04';
+			r.dd = (d-(90+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 5月
+		if( (d>(120+leap)) && (d<(152+leap)) ){
+			r.mm = '05';
+			r.dd = (d-(120+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 6月
+		if( (d>(151+leap)) && (d<(182+leap)) ){
+			r.mm = '06';
+			r.dd = (d-(151+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 7月
+		if( (d>(181+leap)) && (d<(213+leap)) ){
+			r.mm = '07';
+			r.dd = (d-(181+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 8月
+		if( (d>(212+leap)) && (d<(244+leap)) ){
+			r.mm = '08';
+			r.dd = (d-(212+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 9月
+		if( (d>(243+leap)) && (d<(274+leap)) ){
+			r.mm = '09';
+			r.dd = (d-(243+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 10月
+		if( (d>(273+leap)) && (d<(305+leap)) ){
+			r.mm = '10';
+			r.dd = (d-(273+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 11月
+		if( (d>(304+leap)) && (d<(335+leap)) ){
+			r.mm = '11';
+			r.dd = (d-(304+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		// 12月
+		if( (d>(334+leap)) && (d<(366+leap)) ){
+			r.mm = '12';
+			r.dd = (d-(334+leap)).toString();
+			if(r.dd.length<2){
+				r.dd = '0'+r.dd;
+			}
+		}
+		return r;
+	}
+	return res;
 }
 
 
