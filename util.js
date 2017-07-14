@@ -138,7 +138,7 @@ function bnminus(a1,a2) {
 	// if( bnabscomp(a1,a2) =='eq'){
 	// 	return '0';
 	// }
-	var addnega = false; //是否最终结果加负号
+	
 	var negaflag = 0;
 	var a1nega = false;
 	var a2nega = false;

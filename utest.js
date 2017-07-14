@@ -4,7 +4,6 @@ var nt = require('./notime');
 var ut = nt.util;
 
 
-
 console.log(nt.getnowts());
 // console.log( nt.strtoobjts('1499854680007') );
 

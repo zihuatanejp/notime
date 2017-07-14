@@ -8,13 +8,18 @@ var ntgmt = '480'; /* 当前时区与GMT时区偏移的分钟数  */
 module.exports = {
 	getnowts:getnowts,   
 	resetnow:resetnow,
-	// timeplus:timeplus,
 
 	strtoobjts:strtoobjts,
 
+	timeplus:timeplus,
+	timeminus:timeminus,
+	timespace:timespace,
 	msconv:msconv,
 	msconvto:msconvto,
 	rolltoms:rolltoms,
+
+	tzset:tzset,
+
 	util:ut
 };
 
@@ -65,7 +70,6 @@ function getnowts() {
 	else{ tp2 = md; }
 	var obj = strtoobjts(tp2);
 	res.objts = obj;
-
 	return res;
 }
 
@@ -333,7 +337,61 @@ function strtoobjts(ts) {
 	return res;
 }
 
+//用于某时间点加上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
+function timeplus(ts,ms) {
+	if( ut.bnisnega(ms) ){
+		ms = ms.slice(1);
+	}
+	var r = ut.bnplus(ts,ms);
+}
 
+//用于某时间点减上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
+function timeminus(ts,ms) {
+	var r ;
+	if( ut.bnisnega(ms) ){
+		ms = ms.slice(1);
+	}
+	if( ut.bnisnega(ts) ){
+		ts = ts.slice(1);
+		r = '-'+ut.bnplus(ts,ms);
+	}
+	else{
+		r = ut.bnminus(ts,ms);
+	}
+	return r; 
+}
+
+//用于得到两个时间点之间的毫秒数
+function timespace(ts1,ts2) {
+	var ts = '0';
+	var negaflag = 0;
+	
+	if( ut.bnisnega(ts1) ){
+		++negaflag;
+		ts1 =ts1.slice(1);
+	}
+	if( ut.bnisnega(ts2) ){
+		++negaflag;
+		ts2 =ts2.slice(1);
+	}
+
+	//都为正数
+	var res;
+	if(negaflag ==0 || negaflag ==2){
+		res = ut.bnabscomp(ts1,ts2);
+		if( res=='yes' ){
+			ts = ut.bnminus(ts1,ts2);
+		}
+		if(res =='no'){
+			ts = ut.bnminus(ts2,ts1);
+		}
+	}
+	//有1个数为负数
+	if(negaflag ==1){
+		ts = ut.bnplus(ts1,ts2);
+	}
+	return ts;
+}
 
 // 按每月30天 每年365天计 的多少年多少月
 function msconv(ts) {
@@ -577,9 +635,95 @@ function rolltoms(o) {
 	return strts;
 }
 
+//设置时区
+function tzset(tz) {
+	switch(tz){
+		case 'WE0':
+			ntgmt = '0';
+			break;
+		case 'E1':
+			ntgmt = '60';
+			break;
+		case 'E2':
+			ntgmt = '120';
+			break;
+		case 'E3':
+			ntgmt = '180';
+			break;
+		case 'E4':
+			ntgmt = '240';
+			break;
+		case 'E5':
+			ntgmt = '300';
+			break;
+		case 'E6':
+			ntgmt = '360';
+			break;
+		case 'E7':
+			ntgmt = '420';
+			break;
+		case 'E8':
+			ntgmt = '480';
+			break;
+		case 'E9':
+			ntgmt = '540';
+			break;
+		case 'E10':
+			ntgmt = '600';
+			break;
+		case 'E11':
+			ntgmt = '660';
+			break;
+		case 'E12':
+			ntgmt = '720';
+			break;
+		case 'W1':
+			ntgmt = '-60';
+			break;
+		case 'W2':
+			ntgmt = '-120';
+			break;
+		case 'W3':
+			ntgmt = '-180';
+			break;
+		case 'W4':
+			ntgmt = '-240';
+			break;
+		case 'W5':
+			ntgmt = '-300';
+			break;
+		case 'W6':
+			ntgmt = '-360';
+			break;
+		case 'W7':
+			ntgmt = '-420';
+			break;
+		case 'W8':
+			ntgmt = '-480';
+			break;
+		case 'W9':
+			ntgmt = '-540';
+			break;
+		case 'W10':
+			ntgmt = '-600';
+			break;
+		case 'W11':
+			ntgmt = '-660';
+			break;
+		case 'W12':
+			ntgmt = '-720';
+			break;		
+	}
+}
 
 
+function tzmiset(offset) {
+	ntgmt = offset;
+}
 
+function tzcityset(city) {
+	
+}
 
 
 
