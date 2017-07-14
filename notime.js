@@ -722,7 +722,26 @@ function tzmiset(offset) {
 }
 
 function tzcityset(city) {
-	
+	var arr = [
+		{city:'beijing',offset:'480'},
+		{city:'hongkong',offset:'480'},
+		{city:'honolulu',offset:'-600'},
+		{city:'alaska',offset:'-480'},
+		{city:'sanfrancisco',offset:'-480'},
+		{city:'henei',offset:'420'},
+		{city:'huzhiming',offset:'420'},
+		{city:'dubai',offset:'240'},
+		{city:'kabul',offset:'240'},
+		{city:'cairo',offset:'120'},
+		{city:'seoul',offset:'540'},
+		{city:'moscow',offset:'180'}
+	];
+
+	for (var i = 0; i < arr.length; i++) {
+		if(city == arr[i].city){
+			ntgmt = arr[i].offset;
+		}
+	}
 }
 
 
