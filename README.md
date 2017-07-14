@@ -39,7 +39,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 * [getnowts :获取当前时间](#getnowts)
 * [resetnow ：重置当前时间](#resetnow)
 * 时间模型转换方法
-  * [convts :时间模型转换方法 自然语言转换为通用时间模型](convts)
+  * [convts :时间模型转换方法 自然语言转换为通用时间模型](#convts)
   * [strtstotext :时间模型转换方法 strts格式化为自然语言](#strtstotext)
   * [objtstotext :同上，模型转换方法之一](#objtstotext)
   * [numtstotext :同上](#numtstotext)
