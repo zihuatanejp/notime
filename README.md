@@ -15,7 +15,19 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     nt.getnowts();
     //得到一个json对象如下：
     /*
-    {}
+    { 
+        strts: '1500017861106',
+        numts: 1500017861106,
+        objts:{ 
+          yy: '2017',
+          mm: '07',
+          dd: '14',
+          hh: '15',
+          mi: '37',
+          ss: '41',
+          ms: '106'
+        } 
+    }
     */
 ```
 
