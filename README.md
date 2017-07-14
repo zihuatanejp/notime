@@ -15,7 +15,19 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
     nt.getnowts();
     //得到一个json对象如下：
     /*
-    {}
+    { 
+        strts: '1500017861106',
+        numts: 1500017861106,
+        objts:{ 
+          yy: '2017',
+          mm: '07',
+          dd: '14',
+          hh: '15',
+          mi: '37',
+          ss: '41',
+          ms: '106'
+        } 
+    }
     */
 ```
 
@@ -27,7 +39,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 * [getnowts :获取当前时间](#getnowts)
 * [resetnow ：重置当前时间](#resetnow)
 * 时间模型转换方法
-  * [convts :时间模型转换方法 自然语言转换为通用时间模型](convts)
+  * [convts :时间模型转换方法 自然语言转换为通用时间模型](#convts)
   * [strtstotext :时间模型转换方法 strts格式化为自然语言](#strtstotext)
   * [objtstotext :同上，模型转换方法之一](#objtstotext)
   * [numtstotext :同上](#numtstotext)
@@ -136,7 +148,7 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 时区：对于自然语言时间模型的概念会有一个时区设置方法，以输出多角度的当前时间模型，有以下3个方式设置时区角度
 默认时区： 东八区，北京，480
 
-    tzset  E1-E12 W1-W12  24个时区范围东1到东12区，西1到西12区
+    tzset  E1-E12 W1-W12 WE0  25个时区范围东1到东12区，西1到西12区
     tzmiset 设置与GMT时间的偏移分钟数 +/-480
     tzcityset  设置以某个城市拼写所在的时区为准，
 支持以下城市：
@@ -286,7 +298,15 @@ objtostrts的反向转换
 
 设置转化为自然语言时，格式化输出的时间处于哪一个当前时区，默认时区：E8
 
-参数: 'E1'/'E2'.../'E12'/'W1'/.../'W12'    // 东西12个时区
+7.5W-7.5E 中时区零时区经度每15度一个时区,东12区和西12区重合,中间180度经线为国际日期变更线
+
+东12区为8日，西12区为7日
+
+由西向东越过日期变更线即：东12->西12 -1日,
+
+由东向西越过 即:西12->东12 +1日
+
+参数: 'WE0/ E1'/'E2'.../'E12'/'W1'/.../'W12'    // 东西12个时区 和零时区（中时区WE0）
 
 
 ### tzmiset
