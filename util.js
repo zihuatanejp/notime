@@ -327,8 +327,6 @@ function bnmultip(a1,a2){
 					}
 				}
 			}
-			
-
 			// 0就不用加了
 			if(secstr!='0'){
 				if(rstr){

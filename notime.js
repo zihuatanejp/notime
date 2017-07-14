@@ -3,7 +3,7 @@
 var ut = require('./util');
 
 var ntstrts = ''; /* 时间源,如果它被设置了值的话，将会使用它作为源，每1s更新一次 */
-var ntgmt = '0'; /* 当前时区与GMT时区偏移的分钟数  */
+var ntgmt = '480'; /* 当前时区与GMT时区偏移的分钟数  */
 
 module.exports = {
 	getnowts:getnowts,   
@@ -14,6 +14,7 @@ module.exports = {
 
 	msconv:msconv,
 	msconvto:msconvto,
+	rolltoms:rolltoms,
 	util:ut
 };
 
@@ -40,7 +41,8 @@ getobjts: 通用时间模型之间的转换 strts -> objts
 }
 */
 function getnowts() {
-	var tp1 = getnow();	
+	var tp1 = getnow();
+	var tp2;
 	if(!tp1){
 		tp1 = new Date().getTime().toString();
 	}
@@ -48,8 +50,22 @@ function getnowts() {
 	var res = {};
 	res.strts = md;
 	res.numts = parseInt(md);
-	var obj = strtoobjts(md);
+
+	//格式化时处理时区偏移
+	if(ntgmt){
+		var negaflag = false;
+		if( ut.bnisnega(ntgmt) ){
+			ntgmt = ntgmt.slice(1);
+			negaflag = true;
+		}
+		tp2 = rolltoms({mi:ntgmt});
+		if(negaflag){ tp2 = '-'+tp2; }
+		tp2 = ut.bnplus(md,tp2);
+	}
+	else{ tp2 = md; }
+	var obj = strtoobjts(tp2);
 	res.objts = obj;
+
 	return res;
 }
 
@@ -503,7 +519,63 @@ function msconvto(ts,fmt) {
 }
 
 
+function rolltoms(o) {
+	var strts = '0';
+	var yyms='0',mmms='0',ddms='0',hhms='0',mims='0',ssms='0',msms='0';
+	if(o.yy){
+		o.yy = cutzero(o.yy);
+		yyms = ut.bnmultip(o.yy,'31536000000');
+	}
+	if(o.mm){
+		o.mm = cutzero(o.mm);
+		mmms = ut.bnmultip(o.mm,'2592000000');
+	}
+	if(o.dd){
+		o.dd = cutzero(o.dd);
+		ddms = ut.bnmultip(o.dd,'86400000');
+	}
+	if(o.hh){
+		o.hh = cutzero(o.hh);
+		hhms = ut.bnmultip(o.hh,'3600000');
+	}
+	if(o.mi){
+		o.mi = cutzero(o.mi);
+		mims = ut.bnmultip(o.mi,'60000');
+	}
+	if(o.ss){
+		o.ss = cutzero(o.ss);
+		ssms = ut.bnmultip(o.ss,'1000');
+	}
+	if(o.ms){
+		o.ms = cutzero(o.ms);
+		msms = o.ms;
+	}
 
+	strts = ut.bnplus(strts,yyms);
+	strts = ut.bnplus(strts,mmms);
+	strts = ut.bnplus(strts,ddms);
+	strts = ut.bnplus(strts,hhms);
+	strts = ut.bnplus(strts,mims);
+	strts = ut.bnplus(strts,ssms);
+	strts = ut.bnplus(strts,msms);
+
+	//前面全是零的情况
+	function cutzero(numtr) {		
+		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
+			var ind =0;
+			for (var k = 0; k < numtr.length; k++) {
+				if( numtr.charAt(k) != '0'){
+					ind = k;
+					break;
+				}
+			}
+			numtr = numtr.substr(ind);
+		}
+		return numtr;	
+	}
+
+	return strts;
+}
 
 
 
@@ -517,7 +589,6 @@ function resetnow(strts) {
 	ntstrts = strts;
 }
 
-
 // 被getnowts调用,用它返回的时间重写new Date()的默认值为当前时间
 function getnow(){
 	if(ntstrts){
@@ -527,6 +598,7 @@ function getnow(){
 		return ntstrts;
 	}	
 }
+
 
 // 匿名函数 用来启用时间的记时器
 ;(function () {

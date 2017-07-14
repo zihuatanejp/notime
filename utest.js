@@ -4,6 +4,7 @@ var nt = require('./notime');
 var ut = nt.util;
 
 
+
 console.log(nt.getnowts());
 // console.log( nt.strtoobjts('1499854680007') );
 
@@ -135,3 +136,10 @@ console.log(tp17);  // should 1  res:001
 // var tp31 = ut.bnplus('0','1');
 // tp31 = ut.bnplus(tp31,'1');
 // console.log(tp31);
+
+// var tp32 = ut.bnplus('5','1');
+// tp32 = ut.bnplus(tp32,'0');
+// console.log(tp32);
+
+// var tp33 = nt.rolltoms({mi:'03',ss:'30',ms:'747'});
+// console.log(tp33);
