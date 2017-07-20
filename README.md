@@ -206,11 +206,11 @@ hmsf: 表示时分秒毫秒之间的分隔符采用什么
 
 ### objtstotext
 
-用来将给出的strts 转化为想要的便于人类理解的字符串时间格式，该方法接收2个参数，一个必填参数和一个可选的参数对象，用来定制输出字符串的格式
+用来将给出的objts 转化为想要的便于人类理解的字符串时间格式，该方法接收2个参数，一个必填参数和一个可选的参数对象，用来定制输出字符串的格式
 
 参数1: objts:  {yy:1995,mm:1,dd:20,hh:12,mi:30,ss:59,ms:0}
 
-参数2： format: {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'}
+参数2： format: 默认值： {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'}
 
 yy:true/false 表示是否输出年份 //年份可能是4位或以上
 ymdf: 表示年月日之间的分隔符采用什么
@@ -221,6 +221,7 @@ hmsf: 表示时分秒毫秒之间的分隔符采用什么
 ### numtstotext
 
 同上的strtstotext方法，只是传的第一个参数是一个数字
+该方法实现采用js原生的Date对象实现，理论上处理速度应该会更快一点
 
 ### objtostrts
 
