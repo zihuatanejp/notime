@@ -221,6 +221,7 @@ hmsf: 表示时分秒毫秒之间的分隔符采用什么
 ### numtstotext
 
 同上的strtstotext方法，只是传的第一个参数是一个数字
+该方法实现采用js原生的Date对象实现，理论上处理速度应该会更快一点
 
 ### objtostrts
 
