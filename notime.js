@@ -9,7 +9,13 @@ module.exports = {
 	getnowts:getnowts,   
 	resetnow:resetnow,
 
+	convts:convts,
+	strtstotext:strtstotext,
+	objtstotext:objtstotext,
+	numtstotext:numtstotext,
 	strtoobjts:strtoobjts,
+	objtostrts:objtostrts,
+	numtostrts:numtostrts,
 
 	timeplus:timeplus,
 	timeminus:timeminus,
@@ -19,7 +25,8 @@ module.exports = {
 	rolltoms:rolltoms,
 
 	tzset:tzset,
-
+	tzmiset:tzmiset,
+	tzcityset:tzcityset,
 	util:ut
 };
 
@@ -55,26 +62,15 @@ function getnowts() {
 	var res = {};
 	res.strts = md;
 	res.numts = parseInt(md);
-
-	//格式化时处理时区偏移
-	if(ntgmt){
-		var negaflag = false;
-		if( ut.bnisnega(ntgmt) ){
-			ntgmt = ntgmt.slice(1);
-			negaflag = true;
-		}
-		tp2 = rolltoms({mi:ntgmt});
-		if(negaflag){ tp2 = '-'+tp2; }
-		tp2 = ut.bnplus(md,tp2);
-	}
-	else{ tp2 = md; }
-	var obj = strtoobjts(tp2);
-	res.objts = obj;
+	res.objts = strtoobjts(md);
 	return res;
 }
 
 
-function strtoobjts(ts) {  
+function strtoobjts(ts) { 
+	//格式化时处理时区偏移
+	ts = tzaddoffset(ts,ntgmt); 
+
 	var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
 	var obj = msconvto(ts,'dd'); 
 	var cnt = obj.cnt;
@@ -93,18 +89,23 @@ function strtoobjts(ts) {
 		res.ms = tp11.ms;
 	}
 	//小于1年 大小月
-	if( ut.bnabscomp(cnt,'366')=='no' ){
+	if( ut.bnabscomp(cnt,'365')=='no' ){
 		tp1 = daxiaoyueri(cnt,false,false);
 		res.yy = '1970';
 		res.mm = tp1.mm;
 		res.dd = tp1.dd;
-		
-		tp11 = shifenmiao(ret);
-		res.hh = tp11.hh;
-		res.mi = tp11.mi;
-		res.ss = tp11.ss;
-		res.ms = tp11.ms;
 	}
+	if( ut.bnabscomp(cnt,'365')=='eq' ){
+		res.yy = '1970';
+		res.mm = '01';
+		res.dd = '01';
+	}
+
+	tp11 = shifenmiao(ret);
+	res.hh = tp11.hh;
+	res.mi = tp11.mi;
+	res.ss = tp11.ss;
+	res.ms = tp11.ms;
 
 	//大于1年 四年一闰年 2月29日 第一次闰年在1972年
 	//每3500年再减一日 第一次减日在4500年
@@ -123,21 +124,21 @@ function strtoobjts(ts) {
 
 			//非整百数每四年闰一天
 			if( iszhenbai(tp3)=='no' ){ 
-				if( tp4=='4' ){
+				if( tp4=='4' ){ //console.log(tp3);
 					yyms = '31622400000';
 					tp9 = true;
 				}
 			}
 			//整百数每400年闰1天
 			if( iszhenbai(tp3)=='yes' ){ 
-				if( ut.bnmod(tp3,'400')=='0' ){
+				if( ut.bnmod(tp3,'400')=='0' ){ //console.log(tp3)
 					yyms = '31622400000'; 
 					tp9 = true;
 				}
 			}			
 			//1972年闰1天
 			if(tp2=='2'){
-				yyms = '31622400000'; 
+				yyms = '31622400000';  //console.log(tp3);
 				tp4 ='0';
 				tp9 = true;
 			}
@@ -152,12 +153,13 @@ function strtoobjts(ts) {
 			tp1 = ut.bnplus(tp1,yyms);
 
 			if( ut.bnabscomp(tp1, ut.bnplus(ts,'1') ) =='no' ){
+				if(tp4== '4'){
+					tp4 = '0';
+				} 
 				tp2 = ut.bnplus(tp2,'1');
 				tp3 = ut.bnplus(tp3,'1');
 				tp4 = ut.bnplus(tp4,'1'); 
-				if(tp4== '5'){
-					tp4 = '0';
-				} 
+				
 			}
 			else{
 				flag = false;
@@ -239,95 +241,95 @@ function strtoobjts(ts) {
 		if(isjianri){ --leap; } 
 
 		// 1月
-		if(d<32){
+		if(d<31){
 			r.mm = '01';
-			if(day.length<2){ day = '0'+day; }
-			r.dd = day.toString();
+			if(day.length<2){ day = '0'+(d+1); }
+			r.dd = day;
 		}
 		// 2月
-		if( (d>31)&&(d<(60+leap)) ){
+		if( (d>=31)&&(d<(59+leap)) ){
 			r.mm = '02';
-			r.dd = (d-31).toString();
+			r.dd = (d-31+1).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 3月
-		if( (d>(59+leap)) && (d<(91+leap)) ){
+		if( (d>=(59+leap)) && (d<(90+leap)) ){
 			r.mm = '03';
-			r.dd = (d-(59+leap)).toString();
+			r.dd = (1+d-(59+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 4月
-		if( (d>(90+leap)) && (d<(121+leap)) ){
+		if( (d>=(90+leap)) && (d<(120+leap)) ){
 			r.mm = '04';
-			r.dd = (d-(90+leap)).toString();
+			r.dd = (1+d-(90+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 5月
-		if( (d>(120+leap)) && (d<(152+leap)) ){
+		if( (d>=(120+leap)) && (d<(151+leap)) ){
 			r.mm = '05';
-			r.dd = (d-(120+leap)).toString();
+			r.dd = (1+d-(120+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 6月
-		if( (d>(151+leap)) && (d<(182+leap)) ){
+		if( (d>=(151+leap)) && (d<(181+leap)) ){
 			r.mm = '06';
-			r.dd = (d-(151+leap)).toString();
+			r.dd = (1+d-(151+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 7月
-		if( (d>(181+leap)) && (d<(213+leap)) ){
+		if( (d>=(181+leap)) && (d<(212+leap)) ){
 			r.mm = '07';
-			r.dd = (d-(181+leap)).toString();
+			r.dd = (1+d-(181+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 8月
-		if( (d>(212+leap)) && (d<(244+leap)) ){
+		if( (d>=(212+leap)) && (d<(243+leap)) ){
 			r.mm = '08';
-			r.dd = (d-(212+leap)).toString();
+			r.dd = (1+d-(212+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 9月
-		if( (d>(243+leap)) && (d<(274+leap)) ){
+		if( (d>=(243+leap)) && (d<(273+leap)) ){
 			r.mm = '09';
-			r.dd = (d-(243+leap)).toString();
+			r.dd = (1+d-(243+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 10月
-		if( (d>(273+leap)) && (d<(305+leap)) ){
+		if( (d>=(273+leap)) && (d<(304+leap)) ){
 			r.mm = '10';
-			r.dd = (d-(273+leap)).toString();
+			r.dd = (1+d-(273+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 11月
-		if( (d>(304+leap)) && (d<(335+leap)) ){
+		if( (d>=(304+leap)) && (d<(334+leap)) ){
 			r.mm = '11';
-			r.dd = (d-(304+leap)).toString();
+			r.dd = (1+d-(304+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
 		}
 		// 12月
-		if( (d>(334+leap)) && (d<(366+leap)) ){
+		if( (d>=(334+leap)) && (d<(365+leap)) ){
 			r.mm = '12';
-			r.dd = (d-(334+leap)).toString();
+			r.dd = (1+d-(334+leap)).toString();
 			if(r.dd.length<2){
 				r.dd = '0'+r.dd;
 			}
@@ -335,6 +337,352 @@ function strtoobjts(ts) {
 		return r;
 	}
 	return res;
+}
+
+
+function convts(units) {
+	var ymd =     /^(\d{4,})\D(\d{2})\D(\d{2})$/i;
+	var ymdhm=    /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})$/i;
+	var ymdhms=   /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})$/i;
+	var ymdhmsms= /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})\D(\d{3})$/i;
+
+	var objts = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
+	var arr = [];
+	var strts = '';
+
+	if( ymd.test(units) ){
+		arr = units.split(ymd); // [ '', '20161', '11', '12', '' ]
+		objts.yy = arr[1];
+		objts.mm = arr[2];
+		objts.dd = arr[3];
+		strts = objtostrts(objts);
+		return strts;
+	}
+	if( ymdhm.test(units) ){
+		arr = units.split(ymdhm); 
+		//console.log(arr); // [ '', '20161', '11', '12', '12', '23', '' ]
+		objts.yy = arr[1];
+		objts.mm = arr[2];
+		objts.dd = arr[3];
+		objts.hh = arr[4];
+		objts.mi = arr[5];
+		strts = objtostrts(objts);
+		return strts;
+	}
+	if( ymdhms.test(units) ){
+		arr = units.split(ymdhms); 
+		// console.log(arr); // [ '', '20161', '11', '12', '12', '23', '35','' ]
+		objts.yy = arr[1];
+		objts.mm = arr[2];
+		objts.dd = arr[3];
+		objts.hh = arr[4];
+		objts.mi = arr[5];
+		objts.ss = arr[6];
+		strts = objtostrts(objts);
+		return strts;
+	}
+	if( ymdhmsms.test(units) ){
+		arr = units.split(ymdhmsms);
+		// console.log(arr); // [ '', '20161', '11', '12', '12', '23', '35','800', '' ]
+		objts.yy = arr[1];
+		objts.mm = arr[2];
+		objts.dd = arr[3];
+		objts.hh = arr[4];
+		objts.mi = arr[5];
+		objts.ss = arr[6];
+		objts.ms = arr[7];
+		strts = objtostrts(objts);
+		return strts;
+	}
+	return 'no';
+}
+
+function strtstotext(ts,fmt) {
+	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
+	for(var kk in fmt){
+		dft[kk] = fmt[kk];
+	}
+	var objts = strtoobjts(ts);
+	var units = '';
+	if(dft.yy){
+		units = units+objts.yy+dft.ymdf;
+	}
+	if(dft.mm){
+		units = units+objts.mm+dft.ymdf;
+	}
+	if(dft.dd){
+		units = units+objts.dd;
+	}
+	if(dft.hh){
+		if(dft.dd){
+			units = units+' '+objts.hh;
+		}
+		else{
+			units = units+objts.hh;
+		}
+	}
+	if(dft.mi){
+		units = units+dft.hmsf+objts.mi;
+	}
+	if(dft.ss){
+		units = units+dft.hmsf+objts.ss;
+	}
+	if(dft.ms){
+		units = units+dft.hmsf+objts.ms;
+	}
+	return units;
+}
+
+function objtstotext(objts,fmt) {
+	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
+	for(var kk in fmt){
+		dft[kk] = fmt[kk];
+	}
+	var units = '';
+	if(dft.yy){
+		units = units+objts.yy+dft.ymdf;
+	}
+	if(dft.mm){
+		units = units+objts.mm+dft.ymdf;
+	}
+	if(dft.dd){
+		units = units+objts.dd;
+	}
+	if(dft.hh){
+		if(dft.dd){
+			units = units+' '+objts.hh;
+		}
+		else{
+			units = units+objts.hh;
+		}
+	}
+	if(dft.mi){
+		units = units+dft.hmsf+objts.mi;
+	}
+	if(dft.ss){
+		units = units+dft.hmsf+objts.ss;
+	}
+	if(dft.ms){
+		units = units+dft.hmsf+objts.ms;
+	}
+	return units;
+}
+
+function numtstotext(numts,fmt) {
+	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
+	for(var kk in fmt){
+		dft[kk] = fmt[kk];
+	}
+	var units = '';
+	var md = new Date(numts);
+
+	if(dft.yy){
+		units = units+md.getFullYear()+dft.ymdf;
+	}
+	if(dft.mm){
+		var mdmm = (md.getMonth()+1).toString();
+		if(mdmm.length<2){mdmm = '0'+mdmm; }
+		units = units+mdmm+dft.ymdf;
+	}
+	if(dft.dd){
+		var mddd = md.getDate().toString();
+		if(mddd.length<2){
+			mddd = '0'+mddd;
+		}
+		units = units+mddd;
+	}
+	if(dft.hh){
+		var mdhh = md.getHours().toString();
+		if(mdhh.length<2){
+			mdhh = '0'+mdhh;
+		}
+		if(dft.dd){
+			units = units+' '+mdhh;
+		}
+		else{
+			units = units+mdhh;
+		}
+	}
+	if(dft.mi){
+		var mdmi = md.getMinutes().toString();
+		if(mdmi.length<2){
+			mdmi = '0'+mdmi;
+		}
+		units = units+dft.hmsf+mdmi;
+	}
+	if(dft.ss){
+		var mdss = md.getSeconds().toString();
+		if(mdss.length<2){
+			mdss = '0'+mdss;
+		}
+		units = units+dft.hmsf+mdss;
+	}
+	if(dft.ms){
+		var mdms = md.getMilliseconds().toString();
+		if(mdms.length<2){
+			mdms = '0'+mdms;
+		}
+		units = units+dft.hmsf+mdms;
+	}
+	return units;
+}
+
+function objtostrts(objts) {
+	var oyy = '1970';
+	var omm = '01';
+	var strts = '0';
+
+	//先处理多少年的毫秒数 考虑闰年情况
+	if( (!ut.bnisnega(objts.yy) ) &&  ( ut.bnabscomp(objts.yy,oyy)=='yes' ) ){
+		var flag = true;
+		var cuyy = '1970'; //当前已到的年份
+		var cucnt = '0';//累加经过的年份
+		var runcnt = 0;//每四年闰一天
+		var yyms = '31536000000';//单前应该加的ms数 默认365天ms数
+		while(flag){
+			yyms = '31536000000';
+			//1972年闰一天
+			if(cucnt=='2'){ //console.log(cuyy);
+				yyms = '31622400000';//闰年 
+				runcnt = 0;
+			}
+			//非整百数每四年闰一天 
+			if( iszhenbai(cuyy)=='no' ){ // console.log(cuyy); console.log(runcnt);
+				if( runcnt == 4 ){ // console.log(cuyy); //console.log(runcnt);
+					yyms = '31622400000';
+				}
+			}
+			//整百数每400年闰1天
+			if( iszhenbai(cuyy)=='yes' ){  
+				if( ut.bnmod(cuyy,'400')=='0' ){ //console.log(cuyy);
+					yyms = '31622400000'; 
+				}
+			}
+			//3500年减1日
+			if( ut.bnabscomp(cucnt,'3499')=='yes' ){
+				if( ut.bnmod(cucnt,'3500') == '0' ){ 
+					yyms = ut.bnminus(yyms,'86400000');
+				}
+			}
+			if(runcnt==4){runcnt =0}
+			++runcnt;
+			// if(runcnt==5){runcnt =0}
+			cucnt = ut.bnplus(cucnt,'1');
+			cuyy = ut.bnplus(cuyy,'1'); 
+			strts = ut.bnplus(strts,yyms); 
+			if( ut.bnabscomp(cuyy,objts.yy)=='eq' ){
+				flag = false;
+			}
+		}
+	}
+
+	//考虑月份的增加
+	var mm02 = '2678400000';
+	var mm03 = '5097600000';
+	var mm04 = '7776000000';
+	var mm05 = '10368000000';
+	var mm06 = '13046400000';
+	var mm07 = '15638400000';
+	var mm08 = '18316800000';
+	var mm09 = '20995200000';
+	var mm10 = '23587200000';
+	var mm11 = '26265600000';
+	var mm12 = '28857600000';
+	//考虑是否闰年月份
+	if( isrunyy(objts.yy) ){
+		mm03 = ut.bnplus(mm03,'86400000');
+		mm04 = ut.bnplus(mm04,'86400000');
+		mm05 = ut.bnplus(mm05,'86400000');
+		mm06 = ut.bnplus(mm06,'86400000');
+		mm07 = ut.bnplus(mm07,'86400000');
+		mm08 = ut.bnplus(mm08,'86400000');
+		mm09 = ut.bnplus(mm09,'86400000');
+		mm10 = ut.bnplus(mm10,'86400000');
+		mm11 = ut.bnplus(mm11,'86400000');
+		mm12 = ut.bnplus(mm12,'86400000');
+	}
+	switch(objts.mm){
+		case '02':
+			strts = ut.bnplus(strts,mm02);
+			break;
+		case '03':
+			strts = ut.bnplus(strts,mm03);
+			break;
+		case '04':
+			strts = ut.bnplus(strts,mm04);
+			break;
+		case '05':
+			strts = ut.bnplus(strts,mm05);
+			break;
+		case '06':
+			strts = ut.bnplus(strts,mm06);
+			break;
+		case '07':
+			strts = ut.bnplus(strts,mm07);
+			break;
+		case '08':
+			strts = ut.bnplus(strts,mm08);
+			break;
+		case '09':
+			strts = ut.bnplus(strts,mm09);
+			break;
+		case '10':
+			strts = ut.bnplus(strts,mm10);
+			break;
+		case '11':
+			strts = ut.bnplus(strts,mm11);
+			break;
+		case '12':
+			strts = ut.bnplus(strts,mm12);
+			break;
+	}
+
+	//剩余的天数 小时 分钟 毫秒数
+	if( (objts.dd) && (objts.dd!='00') ){
+		objts.dd = ( parseInt(objts.dd)-1).toString();
+		if(objts.dd.length==1){
+			objts.dd = '0'+objts.dd; 
+		}
+		var odd = rolltoms({ dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms });
+		strts = ut.bnplus(strts,odd);
+	}
+
+	//处理时区偏移
+	if(ntgmt){
+		strts = tzminoffset(strts,ntgmt);
+	}
+
+	// 判断是否整百
+	function iszhenbai(str) {
+		if(str.length<3){
+			return 'no';
+		}
+		if( str.slice(-2) == '00' ){
+			return 'yes';
+		}
+		return 'no';
+	}
+	//判断是否是闰年
+	function isrunyy(yy) {
+		var runyy = false;
+		if ( iszhenbai(cuyy)=='no' ){
+			if( ut.bnmod(yy,'4')=='0' ){
+				runyy = true;
+			}
+		}
+		else{
+			if( ut.bnmod(cuyy,'400')=='0' ){
+				runyy = true;
+			}
+		}
+		return runyy;
+	}
+
+	return strts;
+}
+
+function numtostrts(numts) {
+	return numts.toString();
 }
 
 //用于某时间点加上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
@@ -762,6 +1110,44 @@ function getnow(){
 	}	
 }
 
+//处理加上应有的 gmt时区偏移
+function tzaddoffset(ts,gmt) {
+	var tp2;
+	if(gmt){
+		var negaflag = false;
+		if( ut.bnisnega(gmt) ){
+			gmt = gmt.slice(1);
+			negaflag = true;
+		}
+		tp2 = rolltoms({mi:gmt});
+		if(negaflag){ tp2 = '-'+tp2; }
+		tp2 = ut.bnplus(ts,tp2);
+	}
+	else{ tp2 = ts; }
+	return tp2;
+}
+
+//去掉gmt时区的影响
+function tzminoffset(ts,gmt) {
+	var res;
+	var tp;
+	if(gmt){
+		var negaflag = false;
+		if( ut.bnisnega(gmt) ){
+			gmt = gmt.slice(1);
+			negaflag = true;
+		}
+		tp = rolltoms({mi:gmt});
+		if(negaflag){
+			res = ut.bnplus(ts,tp);
+		}
+		else{
+			res = ut.bnminus(ts,tp);
+		}
+	}
+	else{ res = ts; }
+	return res;
+}
 
 // 匿名函数 用来启用时间的记时器
 ;(function () {

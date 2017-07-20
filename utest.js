@@ -4,7 +4,63 @@ var nt = require('./notime');
 var ut = nt.util;
 
 
-console.log(nt.getnowts());
+// console.log(nt.getnowts());
+
+// console.log( nt.numtstotext(1488681020550) );
+// 2017-03-05 10:30:20:550 ok
+
+
+
+/*
+console.log( nt.objtostrts({yy:'2017',mm:'03',dd:'05',hh:'10',mi:'30',ss:'20',ms:'550'}) );
+
+console.log( nt.strtoobjts('1488681020550') );
+
+console.log( nt.strtstotext('1488681020550',{yy:false,mm:false,dd:false}) );
+console.log( nt.strtstotext('1488681020550') );
+console.log( nt.strtstotext('1488681020550',{hh:false,mi:false,ss:false,ms:false}) );
+
+*/
+// console.log( nt.objtostrts({ 
+// 	yy: '2017',
+// 	mm: '07',
+// 	dd: '18',
+// 	hh: '17',
+// 	mi: '37',
+// 	ss: '52',
+// 	ms: '000' 
+// }) 
+// ); 
+//元   1500370672000 
+//输出 1500111472000
+//原因: 月份的第一天是0
+
+// console.log( nt.rolltoms({hh:'18'}) )
+
+// console.log( ut.bnminus('1500367818531','1500108618531') ); // 259200000
+// console.log( ut.bnminus('1500457072000','1500367818000') ); // 89254000
+
+//缺3天？？
+
+/* 输入
+{ 
+	yy: '2017',
+	mm: '07',
+	dd: '18',
+	hh: '16',
+	mi: '50',
+	ss: '18',
+	ms: '531' 
+}
+// 应输出： 1500367818531  
+// 得到: 1499676618531  //解决:重置4年闰年时漏了
+// 得到: 1500108618531
+*/
+// console.log( ut.bnminus('1500367818531','1499676618531') ); //691200000
+
+
+
+
 // console.log( nt.strtoobjts('1499854680007') );
 
 // console.log( ut.bnmod('3500','3500') );
