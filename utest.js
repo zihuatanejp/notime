@@ -80,9 +80,9 @@ console.log(
 );
 
 // -54830513865000 -> 232-06-28 21:42:15
-// console.log(
-// 	nt.strtstotext('-54830513865000',{ms:false})
-// );
+console.log(
+	nt.strtstotext('-54830513865000',{ms:false})
+);
 
 
 // 得到昨天 24小时之前的时间
@@ -94,10 +94,7 @@ console.log(
 // 得到最近n天的日期 
 function lastnday(n) {
 	var cuts = nt.getnowts().strts;
-	var ts;
-	var str;
-	var arr = [];
-	var cuday;
+	var ts, str, arr = [], cuday;
 	for(var i = 1;i<=n;i++ ){
 		cuday = i.toString();
 		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );

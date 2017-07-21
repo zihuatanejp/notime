@@ -1,6 +1,6 @@
 {
   "name": "notime",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope",
   "main": "notime.js",
   "scripts": {
