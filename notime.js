@@ -1,5 +1,5 @@
 'use strict';
-
+ 
 var ut = require('./util');
 
 var ntstrts = ''; /* 时间源,如果它被设置了值的话，将会使用它作为源，每1s更新一次 */

@@ -257,7 +257,7 @@ function bnminus(a1,a2) {
 			})();
 		}
 	})();
-	// 是否是前面全是零的情况
+	//  是否是前面全是零的情况
 	if( (rstr.length>1)&&( rstr.charAt(0)=='0' ) ){
 		var ind =0;
 		for (var k = 0; k < rstr.length; k++) {

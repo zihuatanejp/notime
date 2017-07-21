@@ -85,7 +85,7 @@ console.log(
 );
 
 
-// 得到昨天 24小时之前的时间
+//  得到昨天 24小时之前的时间
 var yesterdayts = nt.timeminus( nt.getnowts().strts, nt.rolltoms({dd:'1'}) ); 
 console.log(
 	nt.strtstotext( yesterdayts)
