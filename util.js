@@ -273,6 +273,13 @@ function bnminus(a1,a2) {
 
 // 大数乘法  //不支持乘以小数
 function bnmultip(a1,a2){
+
+	//有1数全是0的情况直接返回0
+	var regexp = /^0+$/;
+	if( regexp.test(a1) || regexp.test(a2) ){
+		return '0';
+	}
+
 	// 大数在前 小数在后
 	var comp = bnabscomp(a1,a2);
 	if(comp == 'no'){

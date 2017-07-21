@@ -72,40 +72,82 @@ function strtoobjts(ts) {
 	ts = tzaddoffset(ts,ntgmt); 
 
 	var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
+	var tsnega = false;
+
+	if( ut.bnisnega(ts) ){
+		ts = ts.slice(1);
+		tsnega = true;
+	}
+
 	var obj = msconvto(ts,'dd'); 
 	var cnt = obj.cnt;
 	var ret = obj.ret;
 	var tp1,tp2,tp3,tp4,tp5,tp6,tp7,tp8,tp9,tp10,tp11,tp12;
 	//不足1天
-	if(cnt == '0'){
-		res.yy = '1970';
-		res.mm = '01';
-		res.dd = '01';
-		
-		tp11 = shifenmiao(ret);
+	if(cnt == '0'){ 
+		if(!tsnega){ 
+			res.yy = '1970';
+			res.mm = '01';
+			res.dd = '01';
+			
+			tp11 = shifenmiao(ret);			
+		}
+		else{
+			// 负向时间
+			res.yy = '1969';
+			res.mm = '12';
+			res.dd = '31';
+			tp11 = shifenmiao( ut.bnminus('86400000',ret) );
+		}
 		res.hh = tp11.hh;
 		res.mi = tp11.mi;
 		res.ss = tp11.ss;
 		res.ms = tp11.ms;
 	}
 	//小于1年 大小月
-	if( ut.bnabscomp(cnt,'365')=='no' ){
+	if( (ut.bnabscomp(cnt,'365')=='no') && (ut.bnabscomp(cnt,'0')=='yes') ){
+		if(tsnega){
+			res.yy = '1969';
+			obj = msconvto( ut.bnminus('31536000000',ts) ,'dd'); 
+			cnt = obj.cnt;
+			ret = obj.ret;
+		}
+		else{
+			res.yy = '1970';
+		}
 		tp1 = daxiaoyueri(cnt,false,false);
-		res.yy = '1970';
+		
 		res.mm = tp1.mm;
 		res.dd = tp1.dd;
+
+		tp11 = shifenmiao(ret);
+		
+		res.hh = tp11.hh;
+		res.mi = tp11.mi;
+		res.ss = tp11.ss;
+		res.ms = tp11.ms;
 	}
 	if( ut.bnabscomp(cnt,'365')=='eq' ){
-		res.yy = '1970';
-		res.mm = '01';
-		res.dd = '01';
+		if(!tsnega){
+			res.yy = '1971';
+			res.mm = '01';
+			res.dd = '01';
+
+			tp11 = shifenmiao(ret);
+		}
+		if(tsnega){
+			res.yy = '1968';
+			res.mm = '12';
+			res.dd = '31';
+			tp11 = shifenmiao( ut.bnminus('86400000',ret) );
+		}
+		res.hh = tp11.hh;
+		res.mi = tp11.mi;
+		res.ss = tp11.ss;
+		res.ms = tp11.ms;
 	}
 
-	tp11 = shifenmiao(ret);
-	res.hh = tp11.hh;
-	res.mi = tp11.mi;
-	res.ss = tp11.ss;
-	res.ms = tp11.ms;
+	
 
 	//大于1年 四年一闰年 2月29日 第一次闰年在1972年
 	//每3500年再减一日 第一次减日在4500年
@@ -116,32 +158,63 @@ function strtoobjts(ts) {
 		tp2 = '0'; //累加的年数
 		tp3 = '1970';//当前的年份
 		tp4 = '0'; //每四年重置一次,检查是否闰年
+		var xxtp ;//负向时间的当前年份
 		while(flag){
 			//每次进来重置为365天 //重置闰年 减日标识
 			yyms = '31536000000';
 			tp9 = false;//是否闰年
 			tp10 = false;//是否减日
+			
+			if(!tsnega){
+				//非整百数每四年闰一天
+				if( iszhenbai(tp3)=='no' ){ 
+					if( tp4=='4' ){ //console.log(tp3);
+						yyms = '31622400000';
+						tp9 = true;
+					}
+				}
+				//整百数每400年闰1天
+				if( iszhenbai(tp3)=='yes' ){ 
+					if( ut.bnmod(tp3,'400')=='0' ){ //console.log(tp3)
+						yyms = '31622400000'; 
+						tp9 = true;
+					}
+				}
+			}
 
-			//非整百数每四年闰一天
-			if( iszhenbai(tp3)=='no' ){ 
-				if( tp4=='4' ){ //console.log(tp3);
-					yyms = '31622400000';
+			if(tsnega){
+				xxtp = ut.bnminus(tp3,'1');// 当前的实际年份
+				if( iszhenbai( xxtp )=='no' ){
+					if( tp4=='4' ){ //console.log(tp3);
+						yyms = '31622400000';
+						tp9 = true;
+					}
+				}
+				if( iszhenbai( xxtp )=='yes' ){ 
+					if( ut.bnmod(xxtp,'400')=='0' ){ //console.log(tp3)
+						yyms = '31622400000'; 
+						tp9 = true;
+					}
+				}
+			}
+						
+			//1972年闰1天
+			if(!tsnega){
+				if(tp2=='2'){
+					yyms = '31622400000';  //console.log(tp3);
+					tp4 ='0';
 					tp9 = true;
 				}
 			}
-			//整百数每400年闰1天
-			if( iszhenbai(tp3)=='yes' ){ 
-				if( ut.bnmod(tp3,'400')=='0' ){ //console.log(tp3)
+			//1968年闰一天
+			if(tsnega){
+				if(tp2=='1'){
+					tp4='0';
 					yyms = '31622400000'; 
 					tp9 = true;
 				}
-			}			
-			//1972年闰1天
-			if(tp2=='2'){
-				yyms = '31622400000';  //console.log(tp3);
-				tp4 ='0';
-				tp9 = true;
 			}
+			
 			//3500年减1日
 			if( ut.bnabscomp(tp2,'3499')=='yes' ){
 				if( ut.bnmod(tp1,'3500') == '0' ){
@@ -150,14 +223,19 @@ function strtoobjts(ts) {
 				}
 			}
 			tp8 = tp1;// 最后一次加前的整数年
-			tp1 = ut.bnplus(tp1,yyms);
+			tp1 = ut.bnplus(tp1,yyms); 
 
 			if( ut.bnabscomp(tp1, ut.bnplus(ts,'1') ) =='no' ){
 				if(tp4== '4'){
 					tp4 = '0';
 				} 
 				tp2 = ut.bnplus(tp2,'1');
-				tp3 = ut.bnplus(tp3,'1');
+				if(tsnega){
+					tp3 = ut.bnminus(tp3,'1');
+				}
+				else{
+					tp3 = ut.bnplus(tp3,'1');
+				}				
 				tp4 = ut.bnplus(tp4,'1'); 
 				
 			}
@@ -166,11 +244,21 @@ function strtoobjts(ts) {
 			}
 		}
 
-		res.yy = tp3; // 年 
-		tp5 = ut.bnminus(ts,tp8);// 不足1年的毫秒数
+		// 正向时间年份
+		if (!tsnega) {
+			res.yy = tp3; // 年 
+			tp5 = ut.bnminus(ts,tp8);// 不足1年的毫秒数
+		}
+
+		//负向时间年份
+		if(tsnega){
+			res.yy = ut.bnminus(tp3,'1');
+			tp5 = ut.bnminus(tp1,ts);// 不足1年的毫秒数
+		}
+
 		if(tp5 == '0'){
-			res.mm = '12';
-			res.dd = '31';
+			res.mm = '01';
+			res.dd = '01';
 		}
 		else{
 			tp6 = msconvto(tp5,'dd'); //不足1年的部分有多少天
@@ -184,7 +272,6 @@ function strtoobjts(ts) {
 			res.ss = tp11.ss;
 			res.ms = tp11.ms;
 		}
-		
 	}
 
 	// 判断是否整百
@@ -243,8 +330,8 @@ function strtoobjts(ts) {
 		// 1月
 		if(d<31){
 			r.mm = '01';
-			if(day.length<2){ day = '0'+(d+1); }
-			r.dd = day;
+			r.dd = (d+1).toString();
+			if(r.dd.length<2){ r.dd = '0'+r.dd; }
 		}
 		// 2月
 		if( (d>=31)&&(d<(59+leap)) ){
@@ -341,14 +428,15 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
-	var ymd =     /^(\d{4,})\D(\d{2})\D(\d{2})$/i;
-	var ymdhm=    /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})$/i;
-	var ymdhms=   /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})$/i;
-	var ymdhmsms= /^(\d{4,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})\D(\d{3})$/i;
+	var ymd =     /^(\d{1,})\D(\d{2})\D(\d{2})$/i;
+	var ymdhm=    /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})$/i;
+	var ymdhms=   /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})$/i;
+	var ymdhmsms= /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})\D(\d{3})$/i;
 
 	var objts = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
 	var arr = [];
 	var strts = '';
+	var res = {};
 
 	if( ymd.test(units) ){
 		arr = units.split(ymd); // [ '', '20161', '11', '12', '' ]
@@ -356,7 +444,10 @@ function convts(units) {
 		objts.mm = arr[2];
 		objts.dd = arr[3];
 		strts = objtostrts(objts);
-		return strts;
+		res.objts= objts;
+		res.strts = strts;
+		res.numts = parseInt(strts);
+		return res;
 	}
 	if( ymdhm.test(units) ){
 		arr = units.split(ymdhm); 
@@ -367,7 +458,10 @@ function convts(units) {
 		objts.hh = arr[4];
 		objts.mi = arr[5];
 		strts = objtostrts(objts);
-		return strts;
+		res.objts= objts;
+		res.strts = strts;
+		res.numts = parseInt(strts);
+		return res;
 	}
 	if( ymdhms.test(units) ){
 		arr = units.split(ymdhms); 
@@ -379,7 +473,10 @@ function convts(units) {
 		objts.mi = arr[5];
 		objts.ss = arr[6];
 		strts = objtostrts(objts);
-		return strts;
+		res.objts= objts;
+		res.strts = strts;
+		res.numts = parseInt(strts);
+		return res;
 	}
 	if( ymdhmsms.test(units) ){
 		arr = units.split(ymdhmsms);
@@ -392,7 +489,10 @@ function convts(units) {
 		objts.ss = arr[6];
 		objts.ms = arr[7];
 		strts = objtostrts(objts);
-		return strts;
+		res.objts= objts;
+		res.strts = strts;
+		res.numts = parseInt(strts);
+		return res;
 	}
 	return 'no';
 }
@@ -527,18 +627,25 @@ function numtstotext(numts,fmt) {
 	return units;
 }
 
-function objtostrts(objts) {
+function objtostrts(objts) { 
 	var oyy = '1970';
 	var omm = '01';
 	var strts = '0';
+	var tsnega = false;// 是否是1970年之前的时间
+
+	var flag = true;//退出while
+	var cuyy = '1970'; //当前已到的年份
+	var cucnt = '0';//累加经过的年份
+	var runcnt = 0;//每四年闰一天
+	var yyms = '31536000000';//单前应该加的ms数 默认365天ms数
+	var xxtp= '0';// 负向的当前时间年份
+	var xxmm ='0';// 负向的月ms
+	var xxdh = '0';// 负向的日时分ms
+	var xxxmdh = '0';//负向月日时ms
 
 	//先处理多少年的毫秒数 考虑闰年情况
-	if( (!ut.bnisnega(objts.yy) ) &&  ( ut.bnabscomp(objts.yy,oyy)=='yes' ) ){
-		var flag = true;
-		var cuyy = '1970'; //当前已到的年份
-		var cucnt = '0';//累加经过的年份
-		var runcnt = 0;//每四年闰一天
-		var yyms = '31536000000';//单前应该加的ms数 默认365天ms数
+	if(  ut.bnabscomp(objts.yy,oyy)=='yes'  ){
+		
 		while(flag){
 			yyms = '31536000000';
 			//1972年闰一天
@@ -576,6 +683,50 @@ function objtostrts(objts) {
 		}
 	}
 
+	//小于1970年的时间
+	if( ut.bnabscomp(objts.yy,oyy)=='no' ){
+		tsnega = true;
+
+		while(flag){
+			yyms = '31536000000';
+
+			//1968-1969年
+			if(cucnt=='1'){ //console.log(cuyy);
+				yyms = '31622400000';//闰年 
+				runcnt = 0;
+			}
+
+			//非整百数每四年闰一天 
+			if( iszhenbai( xxtp )=='no' ){ 
+				if( runcnt == 4 ){ 
+					yyms = '31622400000';
+				}
+			}
+			//整百数每400年闰1天
+			if( iszhenbai(xxtp)=='yes' ){  
+				if( ut.bnmod(xxtp,'400')=='0' ){ 
+					yyms = '31622400000'; 
+				}
+			}
+			//3500年减1日
+			if( ut.bnabscomp(cucnt,'3499')=='yes' ){
+				if( ut.bnmod(cucnt,'3500') == '0' ){ 
+					yyms = ut.bnminus(yyms,'86400000');
+				}
+			}
+
+			++runcnt;
+			cucnt = ut.bnplus(cucnt,'1');
+			cuyy = ut.bnminus(cuyy,'1');
+			xxtp = ut.bnminus(cuyy,'1');
+			strts = ut.bnplus(strts,yyms);
+			if( ut.bnabscomp( xxtp, objts.yy )=='eq' ){
+				flag = false;
+			}
+		}
+	}
+
+
 	//考虑月份的增加
 	var mm02 = '2678400000';
 	var mm03 = '5097600000';
@@ -589,7 +740,8 @@ function objtostrts(objts) {
 	var mm11 = '26265600000';
 	var mm12 = '28857600000';
 	//考虑是否闰年月份
-	if( isrunyy(objts.yy) ){
+	var isrunxxyy = isrunyy(objts.yy);
+	if( isrunxxyy ){
 		mm03 = ut.bnplus(mm03,'86400000');
 		mm04 = ut.bnplus(mm04,'86400000');
 		mm05 = ut.bnplus(mm05,'86400000');
@@ -603,37 +755,37 @@ function objtostrts(objts) {
 	}
 	switch(objts.mm){
 		case '02':
-			strts = ut.bnplus(strts,mm02);
+			xxmm = mm02;
 			break;
 		case '03':
-			strts = ut.bnplus(strts,mm03);
+			xxmm = mm03;
 			break;
 		case '04':
-			strts = ut.bnplus(strts,mm04);
+			xxmm = mm04;
 			break;
 		case '05':
-			strts = ut.bnplus(strts,mm05);
+			xxmm = mm05;
 			break;
 		case '06':
-			strts = ut.bnplus(strts,mm06);
+			xxmm = mm06;
 			break;
 		case '07':
-			strts = ut.bnplus(strts,mm07);
+			xxmm = mm07;
 			break;
 		case '08':
-			strts = ut.bnplus(strts,mm08);
+			xxmm = mm08;
 			break;
 		case '09':
-			strts = ut.bnplus(strts,mm09);
+			xxmm = mm09;
 			break;
 		case '10':
-			strts = ut.bnplus(strts,mm10);
+			xxmm = mm10;
 			break;
 		case '11':
-			strts = ut.bnplus(strts,mm11);
+			xxmm = mm11;
 			break;
 		case '12':
-			strts = ut.bnplus(strts,mm12);
+			xxmm = mm12;
 			break;
 	}
 
@@ -643,14 +795,32 @@ function objtostrts(objts) {
 		if(objts.dd.length==1){
 			objts.dd = '0'+objts.dd; 
 		}
-		var odd = rolltoms({ dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms });
-		strts = ut.bnplus(strts,odd);
-	}
 
+		xxxmdh = { dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
+		// console.log(xxxmdh);
+		xxdh = rolltoms(xxxmdh);
+		xxxmdh = ut.bnplus(xxmm,xxdh); //console.log(xxxmdh);
+		// 负向时间 超出1年的毫秒部分
+		if(tsnega){
+			if(isrunxxyy){
+				xxxmdh = ut.bnminus('31622400000',xxxmdh);
+			}
+			else{
+				xxxmdh = ut.bnminus('31536000000',xxxmdh);
+			}
+		}
+		//无论正向或负向 都加上超出1年的毫秒部分
+		strts = ut.bnplus(strts,xxxmdh);
+	}
+	if(tsnega){
+		strts = '-'+strts;
+	}
 	//处理时区偏移
 	if(ntgmt){
 		strts = tzminoffset(strts,ntgmt);
 	}
+
+	
 
 	// 判断是否整百
 	function iszhenbai(str) {
@@ -938,7 +1108,7 @@ function rolltoms(o) {
 	}
 	if(o.dd){
 		o.dd = cutzero(o.dd);
-		ddms = ut.bnmultip(o.dd,'86400000');
+		ddms = ut.bnmultip(o.dd,'86400000'); 
 	}
 	if(o.hh){
 		o.hh = cutzero(o.hh);
@@ -949,7 +1119,7 @@ function rolltoms(o) {
 		mims = ut.bnmultip(o.mi,'60000');
 	}
 	if(o.ss){
-		o.ss = cutzero(o.ss);
+		o.ss = cutzero(o.ss); 
 		ssms = ut.bnmultip(o.ss,'1000');
 	}
 	if(o.ms){
@@ -957,14 +1127,14 @@ function rolltoms(o) {
 		msms = o.ms;
 	}
 
-	strts = ut.bnplus(strts,yyms);
-	strts = ut.bnplus(strts,mmms);
-	strts = ut.bnplus(strts,ddms);
-	strts = ut.bnplus(strts,hhms);
-	strts = ut.bnplus(strts,mims);
-	strts = ut.bnplus(strts,ssms);
-	strts = ut.bnplus(strts,msms);
-
+	strts = ut.bnplus(strts,yyms);  //console.log('yyms: '+yyms); console.log(strts);
+	strts = ut.bnplus(strts,mmms);  //console.log('mmms: '+mmms); console.log(strts);
+	strts = ut.bnplus(strts,ddms);  //console.log('ddms: '+ddms); console.log(strts);
+	strts = ut.bnplus(strts,hhms);  //console.log('hhms: '+hhms); console.log(strts);
+	strts = ut.bnplus(strts,mims);  //console.log('mims: '+mims); console.log(strts);
+	strts = ut.bnplus(strts,ssms);  //console.log('ssms: '+ssms); console.log(strts);
+	strts = ut.bnplus(strts,msms);  // console.log('msms: '+msms); console.log(strts);
+	// console.log(strts);
 	//前面全是零的情况
 	function cutzero(numtr) {		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
@@ -979,7 +1149,6 @@ function rolltoms(o) {
 		}
 		return numtr;	
 	}
-
 	return strts;
 }
 

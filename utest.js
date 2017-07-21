@@ -8,7 +8,24 @@ var ut = nt.util;
 
 // console.log( nt.numtstotext(1488681020550) );
 // 2017-03-05 10:30:20:550 ok
+// console.log( nt.strtoobjts('1488681020550') );
 
+// console.log( nt.strtoobjts('-68600400000') );
+// // 1967-10-30 08:20 ok
+// console.log( nt.objtostrts(
+// 	{ yy: '1967', mm: '10', dd: '30', hh: '08', mi: '20', ss: '00', ms: '000' }) );
+// -68600400000
+
+console.log( nt.objtostrts(
+	{ yy: '1970', mm: '05', dd: '30', hh: '08', mi: '20', ss: '18', ms: '555' }) );
+// 12874818555
+console.log( nt.strtoobjts('12874818555') );
+// { yy: '1970', mm: '05', dd: '30', hh: '08', mi: '20', ss: '18', ms: '555' } ok
+
+// var regexp = /^0+$/;
+// console.log( regexp.test('00') );
+// console.log( regexp.test('01') );
+// console.log( regexp.test('010') );
 
 
 /*
