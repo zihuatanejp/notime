@@ -9,26 +9,140 @@ A js lib,for date,time, format,timezone,etc , support for no limit time.i,hope
 
 ## 使用：
 ```javascript
-    var nt = require('notime');  // node require进去
-    
-    //获取当前时间
-    nt.getnowts();
-    //得到一个json对象如下：
-    /*
-    { 
-        strts: '1500017861106',
-        numts: 1500017861106,
-        objts:{ 
-          yy: '2017',
-          mm: '07',
-          dd: '14',
-          hh: '15',
-          mi: '37',
-          ss: '41',
-          ms: '106'
-        } 
-    }
-    */
+
+var nt = require('notime');  // node require进去
+
+//获取当前时间
+nt.getnowts();
+//得到一个json对象如下：
+/*
+{ 
+    strts: '1500017861106',
+    numts: 1500017861106,
+    objts:{ 
+      yy: '2017',
+      mm: '07',
+      dd: '14',
+      hh: '15',
+      mi: '37',
+      ss: '41',
+      ms: '106'
+    } 
+}
+*/
+
+// 得到当前时间戳 
+// 10位 unix秒的时间戳
+console.log(
+	nt.getnowts().strts.substr(0,10)
+);
+//echo 1500618707
+// 13位 毫秒计数的时间戳
+console.log(
+	nt.getnowts().strts
+);
+//echo 1500618707330
+
+// 将时间戳转化指定格式的字符串
+
+// 1500618707330 -> 2017-07-21 14:31:47:330
+console.log(
+	nt.strtstotext('1500618707330')
+);
+
+// 1500618707330 -> 2017-07-21
+console.log(
+	nt.strtstotext('1500618707330',{hh:false,mi:false,ss:false,ms:false})
+);
+
+// 1500618707330 -> 14:31
+console.log(
+	nt.strtstotext('1500618707330',{yy:false,mm:false,dd:false,ss:false,ms:false})
+);
+//...
+
+// 将常用的时间形式转换为时间戳
+// 2017-07-21 -> 1500566400000
+console.log(
+	nt.convts('2017-07-21').strts
+);
+
+// 2017-07-21 14:31:47 -> 1500618707000
+console.log(
+	nt.convts('2017-07-21 14:31:47').strts
+);
+// ...
+
+//將 4分30秒转化为毫秒数
+// {mi:'04',ss:'30'} -> 270000
+console.log(
+	nt.rolltoms({mi:'04',ss:'30'})
+);
+//...
+
+// 把毫秒转化为时长
+// 3456532243 -> { yy:'0000', mm:'01', dd:'10', hh:'00', mi:'08', ss:'52', ms:'243' }
+console.log(
+	nt.msconv('3456532243')
+);
+// 得到多少天
+// 3456532243 （ms） -> 40 （天）
+console.log(
+	nt.msconvto('3456532243','dd').cnt
+);
+
+// 把时间进行时区换算
+// 东一区 2017-05-01 10:30  ->  东八区 2017-05-01 17:30
+nt.tzset('E1');
+var e1ts = nt.convts('2017-05-01 10:30').strts;
+nt.tzset('E8');
+var e8time = nt.strtstotext(e1ts,{ss:false,ms:false});
+console.log(e8time); // 2017-05-01 17:30
+// ...
+
+// 极长和极早的时间支持
+// 53917-07-21 10:30:50 -> 1639305138650000
+console.log(
+	nt.convts('53917-07-21 10:30:50').strts
+);
+
+// -54830513865000 -> 232-06-28 21:42:15
+console.log(
+	nt.strtstotext('-54830513865000',{ms:false})
+);
+
+
+// 得到昨天 24小时之前的时间
+var yesterdayts = nt.timeminus( nt.getnowts().strts, nt.rolltoms({dd:'1'}) ); 
+console.log(
+	nt.strtstotext( yesterdayts)
+);
+
+// 得到最近n天的日期 
+function lastnday(n) {
+	var cuts = nt.getnowts().strts;
+	var ts, str, arr = [], cuday;
+	for(var i = 1;i<=n;i++ ){
+		cuday = i.toString();
+		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );
+		str = nt.strtstotext( ts,{hh:false,mi:false,ss:false,ms:false} );
+		arr.push(str);
+	}
+	return arr;
+}
+
+// 最近一周的日期的数组
+console.log( lastnday(7) );
+/*
+[ 
+'2017-07-20',  '2017-07-19',  '2017-07-18',  
+'2017-07-17',  '2017-07-16',  '2017-07-15',  '2017-07-14' 
+]
+*/
+
+// 最近30天的日期的数组
+console.log( lastnday(30) );
+// ...
 ```
 
 详情参见utest.js
