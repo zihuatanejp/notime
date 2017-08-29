@@ -146,6 +146,7 @@ console.log( lastnday(30) );
 ```
 
 详情参见utest.js
+纯js在页面前端使用可引用单文件nt.js
 
 ----
 ## 方法索引：
@@ -287,6 +288,21 @@ console.log( lastnday(30) );
 ### getnowts
 
 方法描述：用来获取当前时间，返回1个json对象，里面有3种格式的当前时间（strts,numts,objts）
+输入： 无输入参数
+输出: 
+    
+    { strts: '1503989677195',
+      numts: 1503989677195,
+      objts: {
+        yy: '2017',
+        mm: '08',
+        dd: '29',
+        hh: '14',
+        mi: '54',
+        ss: '37',
+        ms: '195' 
+      } 
+    }
 
 ### resetnow
 
