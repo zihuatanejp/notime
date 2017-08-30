@@ -50,7 +50,7 @@ function getnowts() {
 }
 
 
-function strtoobjts(ts) {
+function strtoobjts(ts) { 
 	ts = tzaddoffset(ts,ntgmt); 
 
 	var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
@@ -132,10 +132,9 @@ function strtoobjts(ts) {
 		tp1 = '0'; 
 		tp2 = '0'; 
 		tp3 = '1970';
-		tp4 = '0'; 
+		tp4 = '0';
 		var xxtp ;
 		while(flag){
-
 			yyms = '31536000000';
 			tp9 = false;
 			tp10 = false;
@@ -158,21 +157,22 @@ function strtoobjts(ts) {
 			if(tsnega){
 				xxtp = ut.bnminus(tp3,'1');
 				if( iszhenbai( xxtp )=='no' ){
-					if( tp4=='4' ){
+					if( tp4=='4' ){ 
 						yyms = '31622400000';
 						tp9 = true;
 					}
 				}
 				if( iszhenbai( xxtp )=='yes' ){ 
-					if( ut.bnmod(xxtp,'400')=='0' ){ 
+					if( ut.bnmod(xxtp,'400')=='0' ){
 						yyms = '31622400000'; 
 						tp9 = true;
 					}
 				}
 			}
+				
 			if(!tsnega){
 				if(tp2=='2'){
-					yyms = '31622400000';  
+					yyms = '31622400000'; 
 					tp4 ='0';
 					tp9 = true;
 				}
@@ -212,6 +212,7 @@ function strtoobjts(ts) {
 				flag = false;
 			}
 		}
+
 		if (!tsnega) {
 			res.yy = tp3;  
 			tp5 = ut.bnminus(ts,tp8);
@@ -250,6 +251,7 @@ function strtoobjts(ts) {
 		return 'no';
 	}
 
+	
 	function shifenmiao(tss) {
 		var r = {hh:'00',mi:'00',ss:'00',ms:'000'};
 		var tp1,tp2,tp3,tp4,tp5;
@@ -377,26 +379,23 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
-	var ymd =     /^(\d{1,})\D(\d{2})\D(\d{2})$/i;
-	var ymdhm=    /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})$/i;
-	var ymdhms=   /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})$/i;
-	var ymdhmsms= /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})\D(\d{3})$/i;
+	var ymd =     /^(\d{1,})\D(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhm=    /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhms=   /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhmsms= /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})\D(\d{1,3})$/i;
 
 	var objts = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
 	var arr = [];
 	var strts = '';
 	var res = {};
+	var reok = false;
 
 	if( ymd.test(units) ){
-		arr = units.split(ymd);
+		arr = units.split(ymd); /* [ '', '20161', '11', '12', '' ]*/
 		objts.yy = arr[1];
 		objts.mm = arr[2];
 		objts.dd = arr[3];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;		
 	}
 	if( ymdhm.test(units) ){
 		arr = units.split(ymdhm); 
@@ -405,11 +404,7 @@ function convts(units) {
 		objts.dd = arr[3];
 		objts.hh = arr[4];
 		objts.mi = arr[5];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;
 	}
 	if( ymdhms.test(units) ){
 		arr = units.split(ymdhms); 
@@ -419,11 +414,7 @@ function convts(units) {
 		objts.hh = arr[4];
 		objts.mi = arr[5];
 		objts.ss = arr[6];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;
 	}
 	if( ymdhmsms.test(units) ){
 		arr = units.split(ymdhmsms);
@@ -434,7 +425,11 @@ function convts(units) {
 		objts.mi = arr[5];
 		objts.ss = arr[6];
 		objts.ms = arr[7];
+		reok = true;
+	}
+	if(reok){
 		strts = objtostrts(objts);
+		if(strts=='no'){ return 'no';}
 		res.objts= objts;
 		res.strts = strts;
 		res.numts = parseInt(strts);
@@ -485,6 +480,31 @@ function objtstotext(objts,fmt) {
 		dft[kk] = fmt[kk];
 	}
 	var units = '';
+
+	for(var cc in objts){
+
+		if( (objts[cc]) || ( parseInt(objts[cc])==0) ){
+			
+			objts[cc] = objts[cc].toString();
+			if( (cc =='mm')|| (cc=='dd')|| (cc=='hh')|| (cc=='mi')|| (cc=='ss') ){
+				if( objts[cc].length<2 ){
+					objts[cc] = '0'+objts[cc];
+				}
+			}
+			if(cc=='ms'){
+				if( objts[cc].length==0){
+					objts[cc] = '000';
+				}
+				if( objts[cc].length==1){
+					objts[cc] = '00'+objts[cc];
+				}
+				if( objts[cc].length==2){
+					objts[cc] = '0'+objts[cc];
+				}
+			}
+		}
+	}
+
 	if(dft.yy){
 		units = units+objts.yy+dft.ymdf;
 	}
@@ -589,16 +609,58 @@ function objtostrts(objts) {
 	var xxdh = '0';
 	var xxxmdh = '0';
 
+	
+	objts.yy = cutzero(objts.yy);
+
+	
+	if( (!parseInt(objts.mm)) || ( parseInt(objts.mm)>12 ) ){
+		return 'no';
+	}
+	if(objts.mm.length<2){
+		objts.mm = '0'+objts.mm;		
+	}
+	if( (!parseInt(objts.dd)) || ( parseInt(objts.dd)>31 ) ){
+		return 'no';
+	}
+	if(objts.dd.length<2){
+		objts.dd = '0'+objts.dd;		
+	}
+	if(  ( parseInt(objts.hh)>24 ) ){
+		return 'no';
+	}
+	if(objts.hh.length<2){
+		objts.hh = '0'+objts.hh;		
+	}
+	if(  ( parseInt(objts.mi)>60 ) ){
+		return 'no';
+	}
+	if(objts.mi.length<2){
+		objts.mi = '0'+objts.mi;		
+	}
+	if(  ( parseInt(objts.ss)>60 ) ){
+		return 'no';
+	}
+	if(objts.ss.length<2){
+		objts.ss = '0'+objts.ss;		
+	}
+	if(  ( parseInt(objts.ms)>1000 ) ){
+		return 'no';
+	}
+	if(objts.ms.length==2){
+		objts.ms = '0'+objts.ms;		
+	}
+	if(objts.ms.length==1){
+		objts.ms = '00'+objts.ms;		
+	}
+
 	if(  ut.bnabscomp(objts.yy,oyy)=='yes'  ){
 		
 		while(flag){
 			yyms = '31536000000';
-			
 			if(cucnt=='2'){ 
-				yyms = '31622400000'; 
+				yyms = '31622400000';
 				runcnt = 0;
 			}
-			
 			if( iszhenbai(cuyy)=='no' ){ 
 				if( runcnt == 4 ){ 
 					yyms = '31622400000';
@@ -609,6 +671,7 @@ function objtostrts(objts) {
 					yyms = '31622400000'; 
 				}
 			}
+			
 			if( ut.bnabscomp(cucnt,'3499')=='yes' ){
 				if( ut.bnmod(cucnt,'3500') == '0' ){ 
 					yyms = ut.bnminus(yyms,'86400000');
@@ -616,6 +679,7 @@ function objtostrts(objts) {
 			}
 			if(runcnt==4){runcnt =0}
 			++runcnt;
+			
 			cucnt = ut.bnplus(cucnt,'1');
 			cuyy = ut.bnplus(cuyy,'1'); 
 			strts = ut.bnplus(strts,yyms); 
@@ -631,20 +695,25 @@ function objtostrts(objts) {
 		while(flag){
 			yyms = '31536000000';
 
+			
 			if(cucnt=='1'){ 
 				yyms = '31622400000'; 
 				runcnt = 0;
 			}
+
+			
 			if( iszhenbai( xxtp )=='no' ){ 
 				if( runcnt == 4 ){ 
 					yyms = '31622400000';
 				}
 			}
+			
 			if( iszhenbai(xxtp)=='yes' ){  
 				if( ut.bnmod(xxtp,'400')=='0' ){ 
 					yyms = '31622400000'; 
 				}
 			}
+			
 			if( ut.bnabscomp(cucnt,'3499')=='yes' ){
 				if( ut.bnmod(cucnt,'3500') == '0' ){ 
 					yyms = ut.bnminus(yyms,'86400000');
@@ -662,6 +731,8 @@ function objtostrts(objts) {
 		}
 	}
 
+
+	
 	var mm02 = '2678400000';
 	var mm03 = '5097600000';
 	var mm04 = '7776000000';
@@ -673,6 +744,7 @@ function objtostrts(objts) {
 	var mm10 = '23587200000';
 	var mm11 = '26265600000';
 	var mm12 = '28857600000';
+	
 	var isrunxxyy = isrunyy(objts.yy);
 	if( isrunxxyy ){
 		mm03 = ut.bnplus(mm03,'86400000');
@@ -686,6 +758,7 @@ function objtostrts(objts) {
 		mm11 = ut.bnplus(mm11,'86400000');
 		mm12 = ut.bnplus(mm12,'86400000');
 	}
+
 	switch(objts.mm){
 		case '02':
 			xxmm = mm02;
@@ -722,6 +795,7 @@ function objtostrts(objts) {
 			break;
 	}
 
+	
 	if( (objts.dd) && (objts.dd!='00') ){
 		objts.dd = ( parseInt(objts.dd)-1).toString();
 		if(objts.dd.length==1){
@@ -729,8 +803,10 @@ function objtostrts(objts) {
 		}
 
 		xxxmdh = { dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
+		
 		xxdh = rolltoms(xxxmdh);
 		xxxmdh = ut.bnplus(xxmm,xxdh); 
+		
 		if(tsnega){
 			if(isrunxxyy){
 				xxxmdh = ut.bnminus('31622400000',xxxmdh);
@@ -739,15 +815,18 @@ function objtostrts(objts) {
 				xxxmdh = ut.bnminus('31536000000',xxxmdh);
 			}
 		}
+		
 		strts = ut.bnplus(strts,xxxmdh);
 	}
 	if(tsnega){
 		strts = '-'+strts;
 	}
+	
 	if(ntgmt){
 		strts = tzminoffset(strts,ntgmt);
-	}
+	}	
 
+	
 	function iszhenbai(str) {
 		if(str.length<3){
 			return 'no';
@@ -757,6 +836,7 @@ function objtostrts(objts) {
 		}
 		return 'no';
 	}
+	
 	function isrunyy(yy) {
 		var runyy = false;
 		if ( iszhenbai(cuyy)=='no' ){
@@ -772,12 +852,29 @@ function objtostrts(objts) {
 		return runyy;
 	}
 
+	
+	function cutzero(numtr) {
+		numtr = numtr.toString();		
+		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
+			var ind =0;
+			for (var k = 0; k < numtr.length; k++) {
+				if( numtr.charAt(k) != '0'){
+					ind = k;
+					break;
+				}
+			}
+			numtr = numtr.substr(ind);
+		}
+		return numtr;	
+	}
+
 	return strts;
 }
 
 function numtostrts(numts) {
 	return numts.toString();
 }
+
 
 function timeplus(ts,ms) {
 	if( ut.bnisnega(ms) ){
@@ -786,6 +883,7 @@ function timeplus(ts,ms) {
 	var r = ut.bnplus(ts,ms);
 	return r;
 }
+
 
 function timeminus(ts,ms) {
 	var r ;
@@ -802,6 +900,7 @@ function timeminus(ts,ms) {
 	return r; 
 }
 
+
 function timespace(ts1,ts2) {
 	var ts = '0';
 	var negaflag = 0;
@@ -814,7 +913,7 @@ function timespace(ts1,ts2) {
 		++negaflag;
 		ts2 =ts2.slice(1);
 	}
-
+	
 	var res;
 	if(negaflag ==0 || negaflag ==2){
 		res = ut.bnabscomp(ts1,ts2);
@@ -825,6 +924,7 @@ function timespace(ts1,ts2) {
 			ts = ut.bnminus(ts2,ts1);
 		}
 	}
+	
 	if(negaflag ==1){
 		ts = ut.bnplus(ts1,ts2);
 	}
@@ -862,7 +962,6 @@ function msconv(ts) {
     		}
     	}
     }
-
     if( (ut.bnabscomp(ts,'86400000')=='no') && (ut.bnabscomp(ts,'3599999')=='yes') ){
     	res.hh = ut.bndivis(ts,'3600000');
     	tp1 = ut.bnmod(ts,'3600000');
@@ -884,10 +983,10 @@ function msconv(ts) {
     }
     if( (ut.bnabscomp(ts,'31104000000')=='no') && (ut.bnabscomp(ts,'2591999999')=='yes') ){
     	res.mm = ut.bndivis(ts,'2592000000');
-    	tp1 = ut.bnmod(ts,'2592000000'); 
+    	tp1 = ut.bnmod(ts,'2592000000');
     	tp2 = ut.bnmod(tp1,'86400000'); 
-    	tp3 = ut.bnmod(tp2,'3600000'); 
-    	tp4 = ut.bnmod(tp3,'60000');  
+    	tp3 = ut.bnmod(tp2,'3600000');
+    	tp4 = ut.bnmod(tp3,'60000'); 
     	res.dd = ut.bndivis(tp1,'86400000');
     	res.hh = ut.bndivis(tp2,'3600000');
     	res.mi = ut.bndivis(tp3,'60000');
@@ -900,7 +999,7 @@ function msconv(ts) {
     	tp1 = ut.bnmod(tp5,'2592000000');
     	tp2 = ut.bnmod(tp1,'86400000'); 
     	tp3 = ut.bnmod(tp2,'3600000');
-    	tp4 = ut.bnmod(tp3,'60000'); 
+    	tp4 = ut.bnmod(tp3,'60000');
     	res.mm = ut.bndivis(tp5,'2592000000');
     	res.dd = ut.bndivis(tp1,'86400000');
     	res.hh = ut.bndivis(tp2,'3600000');
@@ -940,7 +1039,6 @@ function msconv(ts) {
     }
     return res;
 }
-
 
 function msconvto(ts,fmt) {
 	var res = {cnt:'0',ret:'0',code:'yes'};
@@ -1040,15 +1138,16 @@ function rolltoms(o) {
 		msms = o.ms;
 	}
 
-	strts = ut.bnplus(strts,yyms);
-	strts = ut.bnplus(strts,mmms);
-	strts = ut.bnplus(strts,ddms);
-	strts = ut.bnplus(strts,hhms);
-	strts = ut.bnplus(strts,mims);
-	strts = ut.bnplus(strts,ssms);
-	strts = ut.bnplus(strts,msms);
+	strts = ut.bnplus(strts,yyms); 
+	strts = ut.bnplus(strts,mmms); 
+	strts = ut.bnplus(strts,ddms); 
+	strts = ut.bnplus(strts,hhms); 
+	strts = ut.bnplus(strts,mims); 
+	strts = ut.bnplus(strts,ssms); 
+	strts = ut.bnplus(strts,msms); 
 
-	function cutzero(numtr) {		
+	function cutzero(numtr) {
+		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
 			for (var k = 0; k < numtr.length; k++) {
@@ -1064,7 +1163,6 @@ function rolltoms(o) {
 	return strts;
 }
 
-//设置时区
 function tzset(tz) {
 	switch(tz){
 		case 'WE0':
@@ -1174,9 +1272,6 @@ function tzcityset(city) {
 }
 
 
-
-/* 工具函数 */
-// 自己设置时间源
 function resetnow(strts) {
 	ntstrts = strts;
 }
@@ -1190,7 +1285,6 @@ function getnow(){
 	}	
 }
 
-//处理加上应有的 gmt时区偏移
 function tzaddoffset(ts,gmt) {
 	var tp2;
 	if(gmt){
@@ -1207,7 +1301,6 @@ function tzaddoffset(ts,gmt) {
 	return tp2;
 }
 
-//去掉gmt时区的影响
 function tzminoffset(ts,gmt) {
 	var res;
 	var tp;
@@ -1229,7 +1322,6 @@ function tzminoffset(ts,gmt) {
 	return res;
 }
 
-// 匿名函数 用来启用时间的记时器
 ;(function () {
 	var interts = setInterval(function () {
 		if( getnow() ){
@@ -1238,10 +1330,9 @@ function tzminoffset(ts,gmt) {
 	}, 500);
 })();
 
+/* util */
 
-// 大数加法
 function bnplus(a1,a2){
-
 	var negaflag = 0;
 	var a1nega = false;
 	var a2nega = false;
@@ -1290,7 +1381,7 @@ function bnplus(a1,a2){
 	var secnum; 
 	var secstr; 
 	(function () {
-	var tp2 = 0; 
+	var tp2 = 0;
 	for(var i = (a1.length-1);i>=0;i-- ){
 		++tp2;	
 		(function () {
@@ -1379,11 +1470,10 @@ function bnminus(a1,a2) {
 	 	}
 	}
 
-	
 	if(negaflag ==1){
 		return '-'+bnplus(a1,a2);
 	}
- 
+
 	if( negaflag ==2 ){
 		if( bnabscomp(a1,a2)=='eq' ){
 			return '0';
@@ -1484,14 +1574,12 @@ function bnminus(a1,a2) {
 	return rstr;
 }
 
-// 大数乘法  //不支持乘以小数
 function bnmultip(a1,a2){
 
 	var regexp = /^0+$/;
 	if( regexp.test(a1) || regexp.test(a2) ){
 		return '0';
 	}
-
 	var comp = bnabscomp(a1,a2);
 	if(comp == 'no'){
 		var tp1 = a1;
@@ -1509,6 +1597,7 @@ function bnmultip(a1,a2){
 	var cellstr; 
 	var tp2 =0;
 
+	
 	(function () {
 		for (var i = (ar2.length-1);i>=0;i--) {
 			++tp2;
@@ -1616,6 +1705,7 @@ function bnisnega(str){
 	}
 	return res;
 }
+
 
 function bnabscomp(a1,a2){
 	var res;

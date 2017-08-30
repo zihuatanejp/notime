@@ -75,15 +75,17 @@ console.log(e8time); // 2017-05-01 17:30
 
 // 极长和极早的时间支持
 // 53917-07-21 10:30:50 -> 1639305138650000
+/*
 console.log(
 	nt.convts('53917-07-21 10:30:50').strts
 );
-
+*/
 // -54830513865000 -> 232-06-28 21:42:15
+/*
 console.log(
 	nt.strtstotext('-54830513865000',{ms:false})
 );
-
+*/
 
 //  得到昨天 24小时之前的时间
 var yesterdayts = nt.timeminus( nt.getnowts().strts, nt.rolltoms({dd:'1'}) ); 
@@ -114,10 +116,12 @@ console.log( lastnday(7) );
 */
 
 // 最近30天的日期的数组
-console.log( lastnday(30) );
+//console.log( lastnday(30) );
 // ...
 
 // console.log(nt.getnowts());
+// console.log( nt.convts('002010-1-11 1:00:23:0') );
+// console.log( nt.objtstotext({yy:1995,mm:1,dd:20,hh:12,mi:0,ss:59,ms:0}) );
 
 // console.log( nt.numtstotext(1488681020550) );
 // 2017-03-05 10:30:20:550 ok

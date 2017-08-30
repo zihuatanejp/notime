@@ -428,26 +428,23 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
-	var ymd =     /^(\d{1,})\D(\d{2})\D(\d{2})$/i;
-	var ymdhm=    /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})$/i;
-	var ymdhms=   /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})$/i;
-	var ymdhmsms= /^(\d{1,})\D(\d{2})\D(\d{2})\s(\d{2})\D(\d{2})\D(\d{2})\D(\d{3})$/i;
+	var ymd =     /^(\d{1,})\D(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhm=    /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhms=   /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})$/i;
+	var ymdhmsms= /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})\D(\d{1,3})$/i;
 
 	var objts = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
 	var arr = [];
 	var strts = '';
 	var res = {};
+	var reok = false;
 
 	if( ymd.test(units) ){
 		arr = units.split(ymd); // [ '', '20161', '11', '12', '' ]
 		objts.yy = arr[1];
 		objts.mm = arr[2];
 		objts.dd = arr[3];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;		
 	}
 	if( ymdhm.test(units) ){
 		arr = units.split(ymdhm); 
@@ -457,11 +454,7 @@ function convts(units) {
 		objts.dd = arr[3];
 		objts.hh = arr[4];
 		objts.mi = arr[5];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;
 	}
 	if( ymdhms.test(units) ){
 		arr = units.split(ymdhms); 
@@ -472,11 +465,7 @@ function convts(units) {
 		objts.hh = arr[4];
 		objts.mi = arr[5];
 		objts.ss = arr[6];
-		strts = objtostrts(objts);
-		res.objts= objts;
-		res.strts = strts;
-		res.numts = parseInt(strts);
-		return res;
+		reok = true;
 	}
 	if( ymdhmsms.test(units) ){
 		arr = units.split(ymdhmsms);
@@ -488,7 +477,11 @@ function convts(units) {
 		objts.mi = arr[5];
 		objts.ss = arr[6];
 		objts.ms = arr[7];
+		reok = true;
+	}
+	if(reok){ console.log(objts)
 		strts = objtostrts(objts);
+		if(strts=='no'){ return 'no';}
 		res.objts= objts;
 		res.strts = strts;
 		res.numts = parseInt(strts);
@@ -539,6 +532,31 @@ function objtstotext(objts,fmt) {
 		dft[kk] = fmt[kk];
 	}
 	var units = '';
+
+	for(var cc in objts){
+
+		if( (objts[cc]) || ( parseInt(objts[cc])==0) ){
+			
+			objts[cc] = objts[cc].toString();
+			if( (cc =='mm')|| (cc=='dd')|| (cc=='hh')|| (cc=='mi')|| (cc=='ss') ){
+				if( objts[cc].length<2 ){
+					objts[cc] = '0'+objts[cc];
+				}
+			}
+			if(cc=='ms'){
+				if( objts[cc].length==0){
+					objts[cc] = '000';
+				}
+				if( objts[cc].length==1){
+					objts[cc] = '00'+objts[cc];
+				}
+				if( objts[cc].length==2){
+					objts[cc] = '0'+objts[cc];
+				}
+			}
+		}
+	}
+
 	if(dft.yy){
 		units = units+objts.yy+dft.ymdf;
 	}
@@ -642,6 +660,52 @@ function objtostrts(objts) {
 	var xxmm ='0';// 负向的月ms
 	var xxdh = '0';// 负向的日时分ms
 	var xxxmdh = '0';//负向月日时ms
+
+	//处理年
+	objts.yy = cutzero(objts.yy);
+
+	//月日时分秒输入参数标准化不足两位的补零，大于范围的返回no
+	if( (!parseInt(objts.mm)) || ( parseInt(objts.mm)>12 ) ){
+		return 'no';
+	}
+	if(objts.mm.length<2){
+		objts.mm = '0'+objts.mm;		
+	}
+	if( (!parseInt(objts.dd)) || ( parseInt(objts.dd)>31 ) ){
+		return 'no';
+	}
+	if(objts.dd.length<2){
+		objts.dd = '0'+objts.dd;		
+	}
+	if(  ( parseInt(objts.hh)>24 ) ){
+		return 'no';
+	}
+	if(objts.hh.length<2){
+		objts.hh = '0'+objts.hh;		
+	}
+	if(  ( parseInt(objts.mi)>60 ) ){
+		return 'no';
+	}
+	if(objts.mi.length<2){
+		objts.mi = '0'+objts.mi;		
+	}
+	if(  ( parseInt(objts.ss)>60 ) ){
+		return 'no';
+	}
+	if(objts.ss.length<2){
+		objts.ss = '0'+objts.ss;		
+	}
+	if(  ( parseInt(objts.ms)>1000 ) ){
+		return 'no';
+	}
+	if(objts.ms.length==2){
+		objts.ms = '0'+objts.ms;		
+	}
+	if(objts.ms.length==1){
+		objts.ms = '00'+objts.ms;		
+	}
+
+	
 
 	//先处理多少年的毫秒数 考虑闰年情况
 	if(  ut.bnabscomp(objts.yy,oyy)=='yes'  ){
@@ -753,6 +817,7 @@ function objtostrts(objts) {
 		mm11 = ut.bnplus(mm11,'86400000');
 		mm12 = ut.bnplus(mm12,'86400000');
 	}
+
 	switch(objts.mm){
 		case '02':
 			xxmm = mm02;
@@ -818,9 +883,7 @@ function objtostrts(objts) {
 	//处理时区偏移
 	if(ntgmt){
 		strts = tzminoffset(strts,ntgmt);
-	}
-
-	
+	}	
 
 	// 判断是否整百
 	function iszhenbai(str) {
@@ -846,6 +909,22 @@ function objtostrts(objts) {
 			}
 		}
 		return runyy;
+	}
+
+	//前面全是零的情况
+	function cutzero(numtr) {
+		numtr = numtr.toString();		
+		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
+			var ind =0;
+			for (var k = 0; k < numtr.length; k++) {
+				if( numtr.charAt(k) != '0'){
+					ind = k;
+					break;
+				}
+			}
+			numtr = numtr.substr(ind);
+		}
+		return numtr;	
 	}
 
 	return strts;
@@ -1137,7 +1216,8 @@ function rolltoms(o) {
 	strts = ut.bnplus(strts,msms);  // console.log('msms: '+msms); console.log(strts);
 	// console.log(strts);
 	//前面全是零的情况
-	function cutzero(numtr) {		
+	function cutzero(numtr) {
+		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
 			for (var k = 0; k < numtr.length; k++) {
