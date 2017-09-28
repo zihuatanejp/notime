@@ -3,6 +3,10 @@
 var nt = require('./notime');
 var ut = nt.util;
 
+var log = console.log;
+
+log( ut.bnminus('2','-7') );
+
 // 使用示例如：
 // 得到当前时间戳 
 // 10位 unix秒的时间戳

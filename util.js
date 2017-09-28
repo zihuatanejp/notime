@@ -165,7 +165,12 @@ function bnminus(a1,a2) {
 
 	// 有一个数为负数
 	if(negaflag ==1){
-		return '-'+bnplus(a1,a2);
+		if(a2nega){
+			return bnplus(a1,a2);
+		}
+		else{
+			return '-'+bnplus(a1,a2);
+		}
 	}
 
 	// 都为负数 
