@@ -1,5 +1,5 @@
-'use strict';
-
+﻿'use strict';
+'dd';
 var nt = require('./notime');
 var ut = nt.util;
 
