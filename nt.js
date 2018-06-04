@@ -1,4 +1,6 @@
 'use strict';
+
+var  ss = 123;
  
 var ut = {
 	bnplus:bnplus,
