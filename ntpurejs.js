@@ -52,6 +52,9 @@ var nt;
 
 
 	function strtoobjts(ts) { 
+		if( !parseInt(ts) ){
+			return '';
+		}
 		ts = tzaddoffset(ts,ntgmt); 
 
 		var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
@@ -440,6 +443,7 @@ var nt;
 	}
 
 	function strtstotext(ts,fmt) {
+		if(!parseInt(ts)){return '';}
 		var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 		for(var kk in fmt){
 			dft[kk] = fmt[kk];
@@ -1472,7 +1476,12 @@ var nt;
 		}
 
 		if(negaflag ==1){
-			return '-'+bnplus(a1,a2);
+			if( a2nega ){
+				return bnplus(a1,a2); 
+			}
+			else{
+				return '-'+bnplus(a1,a2);
+			}
 		}
 
 		if( negaflag ==2 ){

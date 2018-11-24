@@ -68,6 +68,7 @@ function getnowts() {
 
 
 function strtoobjts(ts) { 
+    if( ts == 'nil' ){ return; }
 	//格式化时处理时区偏移
 	ts = tzaddoffset(ts,ntgmt); 
 
@@ -428,6 +429,7 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
+    if( units=='nil' ) { return; }
 	var ymd =     /^(\d{1,})\D(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhm=    /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhms=   /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})$/i;
@@ -491,6 +493,7 @@ function convts(units) {
 }
 
 function strtstotext(ts,fmt) {
+    if( (ts=='nil') || (fmt=='nil') ){ return ; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -527,6 +530,7 @@ function strtstotext(ts,fmt) {
 }
 
 function objtstotext(objts,fmt) {
+    if( (objts=='nil') || (fmt=='nil') ){ return ;}
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -587,6 +591,7 @@ function objtstotext(objts,fmt) {
 }
 
 function numtstotext(numts,fmt) {
+    if( (numts=='nil') || (fmt=='nil') ){ return ; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -646,6 +651,7 @@ function numtstotext(numts,fmt) {
 }
 
 function objtostrts(objts) { 
+    if( objts=='nil' ){ return ; }
 	var oyy = '1970';
 	var omm = '01';
 	var strts = '0';
@@ -887,6 +893,7 @@ function objtostrts(objts) {
 
 	// 判断是否整百
 	function iszhenbai(str) {
+        if (str =='nil'){ return ; }
 		if(str.length<3){
 			return 'no';
 		}
@@ -897,6 +904,7 @@ function objtostrts(objts) {
 	}
 	//判断是否是闰年
 	function isrunyy(yy) {
+        if(yy=='nil'){ return ; }
 		var runyy = false;
 		if ( iszhenbai(cuyy)=='no' ){
 			if( ut.bnmod(yy,'4')=='0' ){
@@ -913,6 +921,7 @@ function objtostrts(objts) {
 
 	//前面全是零的情况
 	function cutzero(numtr) {
+        if( numtr=='nil' ){ return ; }
 		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
@@ -931,11 +940,13 @@ function objtostrts(objts) {
 }
 
 function numtostrts(numts) {
+    if( numts=='nil' ) { return ; }    
 	return numts.toString();
 }
 
 //用于某时间点加上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
 function timeplus(ts,ms) {
+    if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
 	if( ut.bnisnega(ms) ){
 		ms = ms.slice(1);
 	}
@@ -945,6 +956,7 @@ function timeplus(ts,ms) {
 
 //用于某时间点减上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
 function timeminus(ts,ms) {
+    if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
 	var r ;
 	if( ut.bnisnega(ms) ){
 		ms = ms.slice(1);
@@ -961,6 +973,7 @@ function timeminus(ts,ms) {
 
 //用于得到两个时间点之间的毫秒数
 function timespace(ts1,ts2) {
+    if ( (ts1=='nil') ||(ts2=='nil') ) { return 'nil'; }
 	var ts = '0';
 	var negaflag = 0;
 	
@@ -993,6 +1006,7 @@ function timespace(ts1,ts2) {
 
 // 按每月30天 每年365天计 的多少年多少月
 function msconv(ts) {
+    if('ts'=='nil') { return 'nil'; }
     var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
     var tsnega = false;
     var tp1,tp2,tp3,tp4,tp5,tp6,tp7,tp8,tp9,tp10,tp11,tp12;
@@ -1110,6 +1124,7 @@ function msconv(ts) {
 
 
 function msconvto(ts,fmt) {
+    if( (ts=='nil')||(fmt=='nil') ){ return 'nil'; }
 	var res = {cnt:'0',ret:'0',code:'yes'};
 
 	if(fmt =='ss'){
@@ -1176,6 +1191,7 @@ function msconvto(ts,fmt) {
 
 
 function rolltoms(o) {
+    if (o=='nil'){ return 'nil'; }
 	var strts = '0';
 	var yyms='0',mmms='0',ddms='0',hhms='0',mims='0',ssms='0',msms='0';
 	if(o.yy){
@@ -1217,6 +1233,7 @@ function rolltoms(o) {
 	// console.log(strts);
 	//前面全是零的情况
 	function cutzero(numtr) {
+        if(numtr=='nil'){ return 'nil'; }
 		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
@@ -1235,6 +1252,7 @@ function rolltoms(o) {
 
 //设置时区
 function tzset(tz) {
+    if(tzset=='nil'){ return 'nil'; }
 	switch(tz){
 		case 'WE0':
 			ntgmt = '0';
@@ -1316,10 +1334,12 @@ function tzset(tz) {
 
 
 function tzmiset(offset) {
+    if(offset=='nil'){ return 'nil'; }
 	ntgmt = offset;
 }
 
 function tzcityset(city) {
+    if (city=='nil'){ return 'nil'; }
 	var arr = [
 		{city:'beijing',offset:'480'},
 		{city:'hongkong',offset:'480'},
@@ -1362,6 +1382,7 @@ function getnow(){
 
 //处理加上应有的 gmt时区偏移
 function tzaddoffset(ts,gmt) {
+    if( (ts=='nil')|| (gmt=='nil') ){ return 'nil'; }
 	var tp2;
 	if(gmt){
 		var negaflag = false;
@@ -1379,6 +1400,7 @@ function tzaddoffset(ts,gmt) {
 
 //去掉gmt时区的影响
 function tzminoffset(ts,gmt) {
+     if( (ts=='nil')|| (gmt=='nil') ){ return 'nil'; }
 	var res;
 	var tp;
 	if(gmt){

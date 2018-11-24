@@ -364,6 +364,10 @@ function bndivis(a1,a2) {
 	if(comp =='eq'){
 		return '1';
 	}
+	if(a2=='1'){
+		return a1;
+	}
+	
 	var flag = true; 
 	var cnt = '0';
 	var tp; // 减去后的结果值,临时变量

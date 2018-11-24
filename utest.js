@@ -5,8 +5,8 @@ var ut = nt.util;
 
 var log = console.log;
 
-log( ut.bnminus('2','-7') );
-
+// log( ut.bnminus('11','10') );
+/*
 // 使用示例如：
 // 得到当前时间戳 
 // 10位 unix秒的时间戳
@@ -112,6 +112,9 @@ function lastnday(n) {
 
 // 最近一周的日期的数组
 console.log( lastnday(7) );
+
+
+
 /*
 [ 
 '2017-07-20',  '2017-07-19',  '2017-07-18',  

@@ -145,8 +145,12 @@ console.log( lastnday(30) );
 // ...
 ```
 
-详情参见utest.js
-纯js在页面前端使用可引用单文件nt.js
+详情参见utest.js   
+
+**note**:    
+* broswer-version: 纯js在页面前端使用可引用单文件 notime-broswer.js
+* node-version:  在nodejs服务器端使用notime.js   require('notime')
+* 在es6里使用:  可引入 notime-es6.js
 
 ----
 ## 方法索引：
@@ -508,3 +512,15 @@ objtostrts的反向转换
     beijing(中国-北京+8) 480,  hongkong(中国-香港+8) 480, Honolulu(美国-夏威夷檀香山-10) -600, alaska(美国-阿拉斯加-8) -480,
     sanfrancisco(美国-旧金山-8) -480,     henei(越南-河内+7)   420, huzhiming(越南-胡志明+7) 420, dubai(迪拜+4) 240, 
     kabul(阿富汗-卡布+4) 240, cairo(埃及-开罗+2) 120, seoul (韩国-首尔汉城+9) 540, moscow(俄罗斯-莫斯科+3) 180
+
+
+
+GMT: 格林尼治标准时间 GMT使用地球公转和自转作为标准
+现世界已使用utc代替，utc使用国际原子时钟作为标准
+但gmt的时区仍然在utc中延用，
+协调世界时区会使用“Z”
+
+中国北京时间 gmt+8 utc+8都是一样的意思,
+
+国际原子时间精度每日数纳秒
+世界协调时精度精确到毫秒

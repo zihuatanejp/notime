@@ -1,0 +1,583 @@
+
+
+时间单位:
+1s = 1000ms (毫秒)     Milliseconds    (10^-3)
+1ms = 1000us (微秒)μs  Microsecond    (10^-6)
+1us = 1000ns (纳秒)    Nanoseconds    (10^-9)
+1ns = 1000ps (皮秒)    Picoseconds    (10^-12)
+1ps = 1000fs (飞秒)    femtosecond    (10^-15)        飞秒又叫毫微微秒
+1fs = 1000渺秒  (阿托秒)  atomsecond     (10^-18)  原子核内运动周期
+
+
+一飞秒中光可以在真空内传播0.3微米，可见光的振荡周期为1.30到2.57飞秒
+现在家用计算机可以做到1ns运行1条简单指令
+
+timestamp.js
+GMT时间: 格林尼治标准时间 Greenwich Mean Time，GMT）
+//是指位于英国伦敦郊区的皇家格林尼治天文台的标准时间，
+//因为本初子午线被定义在通过那里的经线。
+//自1924年2月5日开始，格林尼治天文台每隔一小时会向全世界发放调时信息。
+// 中英两国的标准时差为8个小时，即英国的当地时间比中国的北京时间晚8小时
+// 英国伦敦是0时区，北京是东八区。也就说，格林尼治时间是1日0点，那么北京是1日早8点
+BST 是“British Summer Time”的缩写，
+//即“英国夏时制”比GMT快一小时，每年从三月底开始，到十月底结束。夏时制期间，中英两国的时差为7小时。
+ DST
+// DST Daylight Saving Time 夏日节约时间 是指在夏天太阳升起的比较早时，将时钟拨快一小时，以提早日光的使用，
+// 这个构想于1784年由美国班杰明·富兰克林提出来，1915年德国成为第一个正式实施夏令日光节约时间的国家，以削减灯光照明和耗电开支。自此以后，全球以欧洲和北美为主的约70个国家都引用这个做法
+
+CST时间
+//CST同时可以代表如下 4 个不同的时区：
+//Central Standard Time (USA) UT-6:00
+//Central Standard Time (Australia) UT+9:30
+//China Standard Time UT+8:00
+//Cuba Standard Time UT-4:00
+//可见，CST可以同时表示美国，澳大利亚，中国，古巴四个国家的标准时间。
+// CST的问题: 通过 Java 获取的CST时间用的是China StandardTime，
+//而客户端JavaScript则默认采用的是美国的中部时间, 有时会对不上
+
+
+CET
+// Central European Time，CET）欧洲中部时间是比世界标准时间（UTC）早一个小时的时区名称之一。
+它被大部分欧洲国家和部分北非国家采用。冬季时间为UTC+1，夏季欧洲夏令时为UTC+2。
+
+UTC  由于地球每天的自转是有些不规则的，而且正在缓慢减速，
+//因此，格林尼治时间已经不再被作为标准时间使用。
+新的标准时间，是由原子钟报时的协调世界时（UTC）
+// 通用协调时(UTC, Universal Time Coordinated)
+// UTC + 时区差 ＝ 本地时间
+// 时区差东为正，西为负。在此，把东八区时区差记为 +0800，
+//UTC + (＋0800) = 本地（北京）时间 (1)
+
+// Date: Fri, 08 Nov 2002 09:42:22 +0800
+说明信件的发送地的地方时间是二○○二年十一月八号，星期五，早上九点四十二分（二十二秒），这个地方的本地时领先UTC八个小时(+0800， 就是东八区时间)。
+// 那么，UTC = 本地时间（北京时间)）- 0800 (2)
+// 0942 - 0800 = 0142 
+
+// Unix时间戳
+//在计算机中看到的UTC时间都是从（1970年01月01日 0:00:00)开始计算秒数的。所看到的UTC时间那就是从1970年这个时间点起到具体时间共有多少秒。 
+这个秒数就是Unix时间戳。
+
+
+从奔腾（Penium）系列开始，Ｉｎｔｅｌ X86 处理器中增加了一个64位的时间戳寄存器（TSC），每个经过一个时钟周期，该寄存器加1；机器重启时，该寄存器将清空。
+现在的处理器其主频都在1G以上，也就是说其时钟周期是纳秒级的（1秒/1000000000=1纳秒）。 
+
+那该寄存器会不会溢出呢？我们可以计算一下，假设机器的主频是3GMHz, 也就是说1秒钟包含3,000,000,000个时钟周期，每个时钟周期为0.33333纳秒，则64位寄存器溢出所需要的时间为：
+
+     2^64 / 3000000000 ≈ 6148914691 秒 ≈71168天 ≈ 195年
+
+
+
+
+golang:
+func (Time) UnixNano
+
+func (t Time) UnixNano() int64
+
+UnixNano将t表示为Unix时间，即从时间点January 1, 1970 UTC到时间点t所经过的时间（单位纳秒）。
+如果纳秒为单位的unix时间超出了int64能表示的范围，结果是未定义的。
+注意这就意味着Time零值调用UnixNano方法的话，结果是未定义的。
+
+默认取unix nano秒转成ms使用,如果当前时间大于2100年,则只去取unix秒级数据,不用unixnano方法
+
+
+
+
+go的notime库设计
+使用 int8切片 作为通用时间数据类型
+
+需要方法
+1.与原生类型的转换
+time  < -- > int8 slice
+duration < -- >int8 slice
+
+2.系统的now时间
+
+3.与外部strts的通信
+
+int8s里的世界
+
+
+
+
+这里的时间模型就变成了
+
+1. strts: 字符串时间戳 '233333332...' 表示从1970年开始的毫秒数 包含负数
+
+2. objts: go-map   包含负数
+{
+	yy, int64
+	mm, int64
+	dd, int64
+	hh, int64
+	mi, int64
+	ss, int64
+	ms, int64
+}
+
+3.自然语言字符串 格式-或/ :之类
+2010-10-10
+2010-10-10 10:12 
+2010-10-10 10:12:12 
+2010-10-10 10:12:12:233
+
+4.
+unixss int64   从1970年起的秒数   包含负数
+unixms int64   从1970年起的毫秒数 包含负数
+
+5. int8s   从1970年起的毫秒数组 包含负数时间 通用时间模型
+[100,1,2,3,4,6,9]
+
+
+然后方法包括:
+Getnowts
+Setnowts
+
+模型转换
+Convts   自然语言 --> int8s
+Ts2text  int8s --> 自然语言
+
+to-int8s:
+Unixss2int8s
+Unixms2int8s
+Objts2int8s
+Strts3int8s
+
+时间转换为
+int8s-to:
+Int8s2strts
+Int8s2objts
+Int8s2unixss
+Int8s2unixms
+
+时间段转换为:
+Int8s2strts
+Int8s...
+
+
+...
+
+
+时间段: 参数1,参数2都作为时间段转换
+Unixss2int8s
+Unixms2int8s
+Objts2int8s
+Huts2int8s
+Strts2int8s
+...反过来仍然5个
+
+
+全部封装为自定义类型
+然后分别为类型写扩展方法，
+坏处1: 这样封装后就都需要用自定义结构体类型初始化,不能方便的用原始类型，需要权衡，
+坏处2: 那么时间的操作方法也需要在每个类型上复制实现一遍,增加了很多工作量，
+原本是打算只实现通用的int8s操作的， 然后其它模型以通用的为桥梁沟通
+封的话，全部定义为各自名称的结构体
+看了下好处和坏处后感觉可以不封装了，保持类型们原本的样子
+最后整理了一下调用时需要的所有方法，
+发现可以精简一部分同一个目的的方法名到一个方法，决定还是封装
+
+时间操作与处理
+Timeplus    时间+时间段 int8s+int8s
+Timeminus   时间-时间段 int8s-int8s
+Timespace   时间与时间之间的时间段
+Msconvto    (转化为多少年或多少天  返回参：单位  返回参2:余值)
+
+设置时区角度:
+    Tzset :用来设置24个时区中的某个
+    Tzmiset :用来设置与GMT时间的偏移分钟数
+    Tzcityset :用来设置当前采用全球某个主要城市的时区
+
+
+
+
+封装类型版和普通类型方法版各写一版
+
+封装版：      (需要时区变换的将时区偏移值作为参数传入方法)
+通用类型int8s 
+type Nort struct{  // int8s类型
+	int8s []int8
+	kd int8      // 代表时间点或时间段 1:时间点 2:时间段
+	tzmi int     // 代表时间所处的时区应该偏移的分钟数
+}
+
+type Mant struct{  // 人类可理解的自然语言类型
+	str string
+	kd int8
+	tzmi int32
+}
+
+type Unixss struct{  // unix秒数时间戳
+	ss int64
+	kd int8
+}
+
+type Unixms struct{ // 表示时间点表示从1970年开始的毫秒数
+	ms int64
+	kd int8
+}
+
+type Fmant struct{   // 类似对象类型的时间
+	yy,mm,dd,hh,mi,ss,ms int64
+	kd int8
+	tzmi int32
+}
+
+type Strts struct{  // 字符串类型的毫秒数时间戳
+	 str string
+	 kd int8
+	 tzmi int32
+}
+
+
+func Getnowcap(tz string) (Nort,Unixss,Unixms,Fmant,Strts )  // 多值返回 传入时区
+
+func Setnowcap(Nort)
+
+func Setnowstr(string)
+
+模型转换:
+func (m Mant) ToNort() (Nort)    //转化为通用包装时间模型
+func (u Unixss) ToNort() (Nort)
+func (u Unixms) ToNort() (Nort)
+func (f Fmant) ToNort() (Nort)
+func (s Strts) ToNort() (Nort)
+
+//其它时间段转化为通用时间段
+func (m Mant) ToNortd() (Nort)   
+func (u Unixss) ToNortd() (Nort)
+func (u Unixms) ToNortd() (Nort)
+func (f Fmant) ToNortd() (Nort)  相当于 rolltoms
+func (s Strts) ToNortd() (Nort)
+
+// 通用转化为其它模型
+func (n Nort) ToMant(fmt) (Mant)
+func (n Nort) ToUnixss() (Unixss)
+func (n Nort) ToUnixms() (Unixms)
+func (n Nort) ToStrts() (Strts)
+func (n Nort) ToFmant() (Fmant)
+
+// 通用时间段转化为其它模型时间段
+func (n Nort) ToMantd(fmt) (Mant)
+func (n Nort) ToUnixssd() (Unixss)
+func (n Nort) ToUnixmsd() (Unixms)
+func (n Nort) ToStrtsd() (Strts)
+func (n Nort) ToFmantd() (Fmant)
+
+时间操作   
+func (n Nort) Timeadd() (Nort)    // 时间点加时间段返回时间点 时间段加时间段返回时间段 时间点加时间点则参数不合法   
+func (n Nort) Timeminus() (Nort)  // 同上
+func (n Nort) Timespace() (Nort)  // 返回两个时间点之间的时间段
+func (n Nort) Timeconv(fmt string) (int64,int64) // 返回一个时间段转化为多少年或多少天的数（返回参：单位  返回参2:余值)
+传入一个时间段类型的nort对象
+
+
+不封装版:  (需要时区变换的统一使用包内的某个值)
+func Getnowts(tz string) (...)  // 返回
+	strts:string 
+	objts:map[string]int64 
+	mants:sting 
+	unixss:int64 
+	unixms:int64 
+
+func Setnowtstext(strts string) //传入strts 
+func Setnowtsnor(int8s []int8) //传入int8s
+func Convts(mants string ,fmt string) ([]int8 )   自然语言 --> int8s
+func Ts2mants( []int8 )  int8s --> 自然语言
+
+各类型时间点转换为int8s 时间点
+func Strts2int8s
+func Objts2int8s
+func Unixss2int8s
+func Unixms2int8s
+
+各类型时间段转换为 int8s时间段
+func Strts2int8sd
+func Objts2int8sd
+
+int8s转换为其它类型时间点
+func Norts2strts
+func Norts2objts
+func Norts2unixss
+func Norts2unixms
+
+int8s时间段转换为其它类型时间段
+func Norts2strtsd
+func Norts2objtsd
+
+
+时间操作与处理:
+Ntimeadd    时间+时间段 int8s+int8s
+Ntimeminus   时间-时间段 int8s-int8s
+Ntimespace   时间与时间之间的时间段
+Nmsconvto    (转化为多少年或多少天  返回参：单位  返回参2:余值)
+
+设置时区角度:
+    Tzset :用来设置24个时区中的某个
+    Tzmiset :用来设置与GMT时间的偏移分钟数
+    Tzcityset :用来设置当前采用全球某个主要城市的时区
+
+
+notime/capt 封装版
+notime/ornt 原生类型版
+
+
+
+go的Time类型能表示极大范围的时间
+结构如下:
+time零值 是公元1年1月1日0时0分0秒0纳秒
+type Time struct {
+    
+    sec int64 //表示自零值时间起的秒数
+
+    // 秒后的纳秒部分
+    // 范围： [0, 999999999].
+    nsec int32
+
+    loc *Location // 时区
+}
+int64表示时间
+毫秒:"9223372036854775807" 到 "-9223372036854775808"
+可以到公元/公元前 292471208年  2亿年  
+如果用秒则可以到2920亿年
+纳秒则可以到292年 1970+292=2262
+
+int8s则可以表示不限范围内的时间
+需要设计这两个结构的互转
+t.Unix()返回1970年起的秒数 int64
+
+t.UnixNano() 返回1970年起的纳秒数 int64 
+
+所以 t是1970-2220 使用UnixNano转为毫秒 初始化int8s
+
+t是2220以后，使用Unix转为秒，毫秒部分为0 初始化int8s
+
+t是1970年以前，多值返回错误
+func T2nort(){}
+
+
+int8s-->Time
+func (n Nort) Totime()Time
+
+8s是1970年之前，多值返回错误
+8s是1970-2120年内，Time.Unix(sec ,nsec int64) Time 纳秒部分精度到毫秒
+8s是2220年后,Time.Unix(xxx...) 纳秒部分为0
+
+
+go time包:
+https://studygolang.com/articles/240
+https://studygolang.com/articles/7411
+代码中应使用time.Time 类型值来保存和传递时间，而不能用指针
+
+
+go的时间段类型 duration
+time.Duration( 100 )*time.Millisecond //100ms 
+seconds := 10
+time.Duration(seconds)*time.Second //10s
+
+time.Duration  1纳秒
+time.Microsecond  
+time.Millisecond 
+time.Second
+time.Minute
+time.Hour
+
+时间段转换为int8sd
+先调用d.Nanoseconds() int64  go的时间段类型最大支持292年 int8sd则没有范围限制
+然后计算得到毫秒数，初始化为 int8sd
+func D2Nort(d Duration) Nort 
+
+int8sd -->duration
+若大于290年，则多值返回错误信息
+
+
+
+
+
+
+
+go time包:常用
+http://www.jb51.net/article/129781.htm
+
+go time包的 这3个方法
+func Sleep(d Duration)
+func After(d Duration) <-chan Time
+func Tick(d Duration) <-chan Time
+
+
+sleep阻塞当前go进程
+time.Sleep(100 * time.Millisecond)
+
+after相当于setTimeout 隔多少时间后返回
+After会在另一线程经过时间段d后向返回值发送当时的时间。等价于NewTimer(d).C
+select {
+case m := <-c:
+    handle(m)
+case <-time.After(5 * time.Minute):
+    fmt.Println("timed out")
+}
+
+Tick是NewTicker的封装，只提供对Ticker的通道的访问。
+如果不需要关闭Ticker，本函数就很方便。
+所以它不能关闭，但作用类似于 setInterval
+c := time.Tick(1 * time.Minute)
+for now := range c {
+    fmt.Printf("%v %s\n", now, statusUpdate())
+}
+
+然后go 包装了Ticker 和Timer 结构体:
+ticker实现了一个结构体封装: 提供关闭发送interval的方法,仅此而已
+
+timer实现了settimeout的结构体封装，
+type Timer
+
+type Timer struct {
+    C <-chan Time
+    // 内含隐藏或非导出字段
+}
+
+Timer类型代表单次时间事件。当Timer到期时，当时的时间会被发送给C，除非Timer是被AfterFunc函数创建的。
+func NewTimer
+
+func NewTimer(d Duration) *Timer
+
+NewTimer创建一个Timer，它会在最少过去时间段d后到期，向其自身的C字段发送当时的时间。
+func AfterFunc
+
+func AfterFunc(d Duration, f func()) *Timer
+
+AfterFunc另起一个go程等待时间段d过去，然后调用f。
+它返回一个Timer，可以通过调用其Stop方法来取消等待和对f的调用。
+func (*Timer) Reset
+
+func (t *Timer) Reset(d Duration) bool
+
+Reset使t重新开始计时，（本方法返回后再）等待时间段d过去后到期。如果调用时t还在等待中会返回真；如果t已经到期或者被停止了会返回假。
+func (*Timer) Stop
+
+func (t *Timer) Stop() bool
+
+Stop停止Timer的执行。如果停止了t会返回真；如果t已经被停止或者过期了会返回假。Stop不会关闭通道t.C，以避免从该通道的读取不正确的成功。
+
+延时方案:
+改chan阻塞为 另起一个go程接收然后函数调用
+
+
+定期更新内置时间计时器：
+想法1: 用信道阻塞，用time.sleep确定间隔  :缺点:比较原始，封装少，要写的控制代码多一点
+
+想法2: 
+用多次执行的after和go程及信道 ：挺好的，就是需要反复调用
+用多次执行的timer 和afterfunc  和上行差不多
+
+想法3:
+用tick 或者封装的ticker结构体  :缺点:tick会自己调整时间间隔适应信道接收者，
+所以tick的时间间隔其实是不可控的，有可能不确定
+我更喜欢相对可控的相对确定的代码，所以放弃tick或ticker方案
+
+
+实现想法2:
+func intvl(fn func() )  {
+	time.AfterFunc( (2* time.Second), func() {
+		intvl(fn)
+		fn()		
+	} )
+}
+
+go intvl(func(){
+	fmt.Println(time.Now())
+})
+
+
+
+go避免多线程竞争写同一3内存变量
+
+程序的封装行为本身会带来逻辑处理的优越和遍利性
+举个例子: 单核cpu上 cpu本身只能分次一次一次的每次操作一次
+在这种运行机制下有中断和多进程的封装实现 
+将单核cpu上可以同时开网页听音乐聊qq下载电影
+在窗口和后台 同时运行多款不同的软件进程
+这比单一的一次只能运行一个软件 键盘输入文字时不能播放视频要明显优越。
+
+而在单一进程内进行再一层的多线程的封装
+则可以使软件本身单一进程更加优越，
+在进程内部分的线程可以共享同一块内存空间，线程协作比进程间的协作更便利，
+效率更高，
+同时开一个线程的开销远远小于新开一个进程的开销
+而单一软件内开多线程后，比如下载视频流 可以同时建立多个下载链接，
+可以建立后台任务 
+
+而go程则是对多线程的进一步封装，它能实现多线程的所有优点，
+同时，它还有多线程不具有的优点，
+新开一个go程比新开一个线程开销更小
+go程之间的协作比线程之间的协作更便利
+go程会自己透明的管理线程
+
+保证单一go程 读取和设置包内变量
+一个需要锁的变量 就加一个锁
+
+方案： 
+go的 sync
+2 信道发送阻塞 一个chan锁
+3 信道共享内存 几个信道流 输入，输出，状态
+
+进度:
+12-28
+time  < -- > int8 slice ok
+duration < -- >int8 slice  ok
+
+
+18-01-01
+Setnowcap(Nort)   ok
+func Setnowstr(string)  ok
+
+
+Getnowcap() // 太复杂，它属于与其它基本原型的综合运用 先写其它类型的
+
+n.ToUnixss ok
+n.ToUnixssd  ok
+n.ToUnixms   ok
+n.ToUnixmsd  ok
+n.Tostrts    ok
+n.Tostrtsd   ok
+n.ToFmant    ok  2018-01-02
+n.ToFmantd   ok  2018-01-12
+n.ToMant     ok  2018-01-17
+n.ToMantd    ok  2018-01-17
+
+
+
+
+
+
+
+
+tofmant方法:
+目标: 将毫秒数转化为对应偏移时区的年月日时分秒
+
+1.对nort进行0时区修正得到毫秒数
+2.判断nort的方向 正向或负向 1970年以后或以前
+3.将nort构建为新的nortd对象
+4.对nortd调用timeconv转化为天  int64范围内的天数 和不足的余数部分
+5.先得到年份 分情况：1.不足一天或不足一年 2.大于一年     是否闰年是否减日应该根据年份来得到
+6.再得到月份和天
+7.再得到时分秒毫秒
+
+tomant方法:
+人类通用 大致三种
+日期： yyyy-mm-dd  yyyy/mm/dd
+时间： hh:mi:ss
+
+日期+时间: 
+yyyy-mm-dd hh:mi:ss 
+yyyy-mm-dd hh:mi
+yyyy/mm/dd hh:mi:ss
+yyyy/mm/dd hh:mi
+
+所以接受的所有参数格式为:
+yyyy-mm-dd  
+yyyy/mm/dd
+hh:mi:ss
+yyyy-mm-dd hh:mi:ss 
+yyyy-mm-dd hh:mi
+yyyy/mm/dd hh:mi:ss
+yyyy/mm/dd hh:mi
