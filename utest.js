@@ -5,6 +5,8 @@ var ut = nt.util;
 
 var log = console.log;
 
+log( nt.getnowts() )
+
 // log( ut.bnminus('11','10') );
 /*
 // 使用示例如：
@@ -92,26 +94,26 @@ console.log(
 */
 
 //  得到昨天 24小时之前的时间
-var yesterdayts = nt.timeminus( nt.getnowts().strts, nt.rolltoms({dd:'1'}) ); 
-console.log(
-	nt.strtstotext( yesterdayts)
-);
+// var yesterdayts = nt.timeminus( nt.getnowts().strts, nt.rolltoms({dd:'1'}) ); 
+// console.log(
+// 	nt.strtstotext( yesterdayts)
+// );
 
 // 得到最近n天的日期 
-function lastnday(n) {
-	var cuts = nt.getnowts().strts;
-	var ts, str, arr = [], cuday;
-	for(var i = 1;i<=n;i++ ){
-		cuday = i.toString();
-		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );
-		str = nt.strtstotext( ts,{hh:false,mi:false,ss:false,ms:false} );
-		arr.push(str);
-	}
-	return arr;
-}
+// function lastnday(n) {
+// 	var cuts = nt.getnowts().strts;
+// 	var ts, str, arr = [], cuday;
+// 	for(var i = 1;i<=n;i++ ){
+// 		cuday = i.toString();
+// 		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );
+// 		str = nt.strtstotext( ts,{hh:false,mi:false,ss:false,ms:false} );
+// 		arr.push(str);
+// 	}
+// 	return arr;
+// }
 
 // 最近一周的日期的数组
-console.log( lastnday(7) );
+// console.log( lastnday(7) );
 
 
 

@@ -1,5 +1,6 @@
 'use strict';
  
+ var log = console.log;
 var ut = require('./util');
 
 var ntstrts = ''; /* 时间源,如果它被设置了值的话，将会使用它作为源，每1s更新一次 */
@@ -55,6 +56,7 @@ getobjts: 通用时间模型之间的转换 strts -> objts
 function getnowts() {
 	var tp1 = getnow();
 	var tp2;
+    log(tp1)
 	if(!tp1){
 		tp1 = new Date().getTime().toString();
 	}
@@ -1367,16 +1369,17 @@ function tzcityset(city) {
 /* 工具函数 */
 // 自己设置时间源
 function resetnow(strts) {
+    if (!strts){ return 'nil'; }
 	ntstrts = strts;
 }
 
 // 被getnowts调用,用它返回的时间重写new Date()的默认值为当前时间
 function getnow(){
 	if(ntstrts){
-		return false;
+		return ntstrts;
 	}
 	else{
-		return ntstrts;
+		return false;
 	}	
 }
 
