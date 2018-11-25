@@ -149,7 +149,16 @@ console.log( lastnday(30) );
 **note**:    
 * broswer-version: 纯js在页面前端使用可引用单文件 notime-broswer.js
 * node-version:  在nodejs服务器端使用notime.js   require('notime')
-* 在es6里使用:  可引入 notime-es6.js
+* 在es6里使用:  可引入 notime-es6.js    
+（
+// 当然一般来说因为前端的一些打包工具的原因，也可以直接 ：  
+`
+> npm i notime  (npm命令行安装)
+import notime from 'notime'  //页面内使用
+notime.getnowts()  // ... 
+`
+）
+
 
 ----
 ## 方法索引：
