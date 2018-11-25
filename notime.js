@@ -430,7 +430,8 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
-    if( units=='nil' ) { return; }
+    if(!units){ return 'nil'; }
+    if( units=='nil' ) { return 'nil' ; }
 	var ymd =     /^(\d{1,})\D(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhm=    /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhms=   /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})$/i;
@@ -490,7 +491,7 @@ function convts(units) {
 		res.numts = parseInt(strts);
 		return res;
 	}
-	return 'no';
+	return 'nil';
 }
 
 function strtstotext(ts,fmt) {
@@ -498,6 +499,7 @@ function strtstotext(ts,fmt) {
     if( (!verts)|| (verts=='nil') ){
         return 'nil';
     }
+    if( !ts ){ return 'nil'; }
     if( (ts=='nil') || (fmt=='nil') ){ return 'nil'; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
@@ -535,7 +537,8 @@ function strtstotext(ts,fmt) {
 }
 
 function objtstotext(objts,fmt) {
-    if( (objts=='nil') || (fmt=='nil') ){ return ;}
+    if( (objts=='nil') || (fmt=='nil') ){ return 'nil' ;}
+    if( (!objts)|| ( typeof(objts)!='object' ) ){ return 'nil'; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -596,7 +599,8 @@ function objtstotext(objts,fmt) {
 }
 
 function numtstotext(numts,fmt) {
-    if( (numts=='nil') || (fmt=='nil') ){ return ; }
+    if( !parseInt(numts)){ return 'nil'; }
+    if( (numts=='nil') || (fmt=='nil') ){ return 'nil'; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -656,7 +660,8 @@ function numtstotext(numts,fmt) {
 }
 
 function objtostrts(objts) { 
-    if( objts=='nil' ){ return ; }
+    if(!objts){ return 'nil'; }
+    if( objts=='nil' ){ return 'nil' ; }
 	var oyy = '1970';
 	var omm = '01';
 	var strts = '0';
@@ -926,7 +931,7 @@ function objtostrts(objts) {
 
 	//前面全是零的情况
 	function cutzero(numtr) {
-        if( numtr=='nil' ){ return ; }
+        if( numtr=='nil' ){ return 'nil' ; }
 		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
@@ -945,7 +950,8 @@ function objtostrts(objts) {
 }
 
 function numtostrts(numts) {
-    if( numts=='nil' ) { return ; }    
+    if( (!numts)|| (!parseInt(numts)) ){ return 'nil'; }
+    if( numts=='nil' ) { return 'nil'; }    
 	return numts.toString();
 }
 
