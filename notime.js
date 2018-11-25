@@ -1144,8 +1144,8 @@ function msconvto(ts,fmt) {
 
 	if(fmt == 'mi'){
 		if( ut.bnabscomp(ts,'59999')=='yes' ){
-			res.cnt = ut.bndivis( ts,'60000');
-    		res.ret = ut.bnmod(ts,'60000');
+            res.cnt = ut.bndivis( ts,'60000');
+            res.ret = ut.bnmod(ts,'60000');
 		}
 		else{
 			res.ret = ts;
@@ -1154,8 +1154,8 @@ function msconvto(ts,fmt) {
 
 	if(fmt == 'hh'){
 		if(ut.bnabscomp(ts,'3599999')=='yes'){
-			res.cnt = ut.bndivis( ts,'3600000');
-    		res.ret = ut.bnmod(ts,'3600000');
+            res.cnt = ut.bndivis( ts,'3600000');
+            res.ret = ut.bnmod(ts,'3600000');
 		}
 		else{
 			res.ret = ts;
