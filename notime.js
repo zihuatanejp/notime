@@ -56,7 +56,6 @@ getobjts: 通用时间模型之间的转换 strts -> objts
 function getnowts() {
 	var tp1 = getnow();
 	var tp2;
-    log(tp1)
 	if(!tp1){
 		tp1 = new Date().getTime().toString();
 	}
@@ -483,7 +482,7 @@ function convts(units) {
 		objts.ms = arr[7];
 		reok = true;
 	}
-	if(reok){ console.log(objts)
+	if(reok){ //console.log(objts)
 		strts = objtostrts(objts);
 		if(strts=='no'){ return 'no';}
 		res.objts= objts;
@@ -495,7 +494,11 @@ function convts(units) {
 }
 
 function strtstotext(ts,fmt) {
-    if( (ts=='nil') || (fmt=='nil') ){ return ; }
+    var verts =ut.isnumstr(ts);
+    if( (!verts)|| (verts=='nil') ){
+        return 'nil';
+    }
+    if( (ts=='nil') || (fmt=='nil') ){ return 'nil'; }
 	var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 	for(var kk in fmt){
 		dft[kk] = fmt[kk];
@@ -1375,12 +1378,8 @@ function resetnow(strts) {
 
 // 被getnowts调用,用它返回的时间重写new Date()的默认值为当前时间
 function getnow(){
-	if(ntstrts){
-		return ntstrts;
-	}
-	else{
-		return false;
-	}	
+	if(ntstrts){ return ntstrts; }
+	else{ return false; }	
 }
 
 //处理加上应有的 gmt时区偏移

@@ -1277,12 +1277,8 @@ function resetnow(strts) {
 }
 
 function getnow(){
-	if(ntstrts){
-		return false;
-	}
-	else{
-		return ntstrts;
-	}	
+	if(ntstrts){ return ntstrts; }
+    else{ return false; }   
 }
 
 function tzaddoffset(ts,gmt) {

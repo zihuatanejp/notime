@@ -341,3 +341,18 @@ console.log(tp17);  // should 1  res:001
 
 // var tp33 = nt.rolltoms({mi:'03',ss:'30',ms:'747'});
 // console.log(tp33);
+// 
+// 
+// 
+// var log = console.log;
+
+// log( nt.util.isnumstr('') ,'nil' ); 
+// log( nt.util.isnumstr('123') ,'true'); 
+// log( nt.util.isnumstr('-123'), 'true' ); 
+// log( nt.util.isnumstr('+123'),'true' ); 
+// log( nt.util.isnumstr('12+3') ,'false'); 
+// log( nt.util.isnumstr('1d3'),'false' ); 
+// log( nt.util.isnumstr('ddd13'), 'false' ); 
+// log( nt.util.isnumstr('13344344d'),'false' ); 
+// log( nt.util.isnumstr('13344344d6'),'false' ); 
+// log( nt.util.isnumstr('133443446'),'true' ); 

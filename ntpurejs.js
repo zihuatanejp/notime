@@ -11,7 +11,8 @@ var nt;
 		bndivis:bndivis,
 		bnmod:bnmod,
 		bnisnega:bnisnega,
-		bnabscomp:bnabscomp
+		bnabscomp:bnabscomp,
+        isnumstr:isnumstr,
 	};
 
 	nt = {
@@ -52,9 +53,7 @@ var nt;
 
 
 	function strtoobjts(ts) { 
-		if( !parseInt(ts) ){
-			return '';
-		}
+		
 		ts = tzaddoffset(ts,ntgmt); 
 
 		var res = {yy:'0000',mm:'00',dd:'00',hh:'00',mi:'00',ss:'00',ms:'000'};
@@ -443,7 +442,10 @@ var nt;
 	}
 
 	function strtstotext(ts,fmt) {
-		if(!parseInt(ts)){return '';}
+		var verts =ut.isnumstr(ts);
+        if( (!verts)|| (verts=='nil') ){
+            return 'nil';
+        }
 		var dft = {yy:true,mm:true,dd:true,hh:true,mi:true,ss:true,ms:true,ymdf:'-',hmsf:':'};
 		for(var kk in fmt){
 			dft[kk] = fmt[kk];
@@ -1282,12 +1284,8 @@ var nt;
 	}
 
 	function getnow(){
-		if(ntstrts){
-			return false;
-		}
-		else{
-			return ntstrts;
-		}	
+		if(ntstrts){ return ntstrts; }
+        else{ return false; }   
 	}
 
 	function tzaddoffset(ts,gmt) {
@@ -1754,6 +1752,28 @@ var nt;
 		}
 		return res;
 	}
+
+    function isnumstr(str){
+        if (!str){ return 'nil'; }
+        var premap = [  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
+        var strlen = str.length;
+        for (var i=0;i<strlen;i++){            
+            if( 
+                premap.some(function(item){
+                    if( str.charAt(i)==item){return true;}
+                    else{ return false; }
+                }) 
+            ){
+                continue;
+            }else{
+                if( (i==0) && ( ( str.charAt(i)=='-' )||( str.charAt(i)=='+'  ) ) ){
+                    continue;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
 
 })();
  

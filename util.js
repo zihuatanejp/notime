@@ -7,7 +7,8 @@ module.exports = {
 	bndivis:bndivis,
 	bnmod:bnmod,
 	bnisnega:bnisnega,
-	bnabscomp:bnabscomp
+	bnabscomp:bnabscomp,
+    isnumstr:isnumstr
 };
 
 // 大数加法
@@ -468,4 +469,27 @@ function bnabscomp(a1,a2){
 		}
 	}
 	return res;
+}
+
+// 判断是不是一个数字的字符串形式 
+function isnumstr(str){
+    if (!str){ return 'nil'; }
+    var premap = [  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ];
+    var strlen = str.length;
+    for (var i=0;i<strlen;i++){            
+        if( 
+            premap.some(function(item){
+                if( str.charAt(i)==item){return true;}
+                else{ return false; }
+            }) 
+        ){
+            continue;
+        }else{
+            if( (i==0) && ( ( str.charAt(i)=='-' )||( str.charAt(i)=='+'  ) ) ){
+                continue;
+            }
+            return false;
+        }
+    }
+    return true;
 }
