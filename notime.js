@@ -2,6 +2,7 @@
  
  var log = console.log;
 var ut = require('./util');
+var weekday = require('./weekday');
 
 var ntstrts = ''; /* 时间源,如果它被设置了值的话，将会使用它作为源，每1s更新一次 */
 var ntgmt = '480'; /* 当前时区与GMT时区偏移的分钟数  */
@@ -24,6 +25,8 @@ module.exports = {
 	msconv:msconv,
 	msconvto:msconvto,
 	rolltoms:rolltoms,
+	getweekday:getweekday,
+	getweekdaybyts:getweekdaybyts,
 
 	tzset:tzset,
 	tzmiset:tzmiset,
@@ -430,8 +433,8 @@ function strtoobjts(ts) {
 
 
 function convts(units) {
-    if(!units){ return 'nil'; }
-    if( units=='nil' ) { return 'nil' ; }
+	if(!units){ return 'nil'; }
+	if( units=='nil' ) { return 'nil' ; }
 	var ymd =     /^(\d{1,})\D(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhm=    /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})$/i;
 	var ymdhms=   /^(\d{1,})\D(\d{1,2})\D(\d{1,2})\s(\d{1,2})\D(\d{1,2})\D(\d{1,2})$/i;
@@ -1133,7 +1136,7 @@ function msconv(ts) {
 
 
 function msconvto(ts,fmt) {
-    if( (ts=='nil')||(fmt=='nil') ){ return 'nil'; }
+	if( (ts=='nil')||(fmt=='nil') ){ return 'nil'; }
 	var res = {cnt:'0',ret:'0',code:'yes'};
 
 	if(fmt =='ss'){
@@ -1148,8 +1151,8 @@ function msconvto(ts,fmt) {
 
 	if(fmt == 'mi'){
 		if( ut.bnabscomp(ts,'59999')=='yes' ){
-            res.cnt = ut.bndivis( ts,'60000');
-            res.ret = ut.bnmod(ts,'60000');
+			res.cnt = ut.bndivis( ts,'60000');
+			res.ret = ut.bnmod(ts,'60000');
 		}
 		else{
 			res.ret = ts;
@@ -1158,8 +1161,8 @@ function msconvto(ts,fmt) {
 
 	if(fmt == 'hh'){
 		if(ut.bnabscomp(ts,'3599999')=='yes'){
-            res.cnt = ut.bndivis( ts,'3600000');
-            res.ret = ut.bnmod(ts,'3600000');
+			res.cnt = ut.bndivis( ts,'3600000');
+			res.ret = ut.bnmod(ts,'3600000');
 		}
 		else{
 			res.ret = ts;
@@ -1257,6 +1260,33 @@ function rolltoms(o) {
 		return numtr;	
 	}
 	return strts;
+}
+
+// 获取某天的日期是星期几 
+// 输入值: "2020-07-05"
+// 返回值: 一 二 三 四 五 六 日
+function getweekday(datestr) {
+	var res = weekday["datestr"];
+	if(res){
+		return res;
+	}
+	var ots = convts(datestr);
+	if((ots=="nil")||(ots=="no")||(!ots)){
+		return "nil";
+	}
+	return getweekdaybyts(ots.strts)
+}
+
+function getweekdaybyts(ts) {
+	var ddres = msconvto(ts,"dd");
+	if(ddres.code!="yes"){
+		return "nil";
+	}
+	var ddret = ut.bnmod(ddres.cnt,"7");
+	
+	var weeklist=[ "五", "六", "日", "一", "二", "三", "四"];
+	// console.log("天数", ddres.cnt,"余数", ddret,"星期","周"+weeklist[ddret]);
+	return weeklist[ddret];
 }
 
 //设置时区
