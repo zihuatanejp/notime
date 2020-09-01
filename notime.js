@@ -1244,7 +1244,7 @@ function rolltoms(o) {
 	// console.log(strts);
 	//前面全是零的情况
 	function cutzero(numtr) {
-        if(numtr=='nil'){ return 'nil'; }
+    if(numtr=='nil'){ return 'nil'; }
 		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
@@ -1263,7 +1263,7 @@ function rolltoms(o) {
 
 //设置时区
 function tzset(tz) {
-    if(tzset=='nil'){ return 'nil'; }
+  if(tzset=='nil'){ return 'nil'; }
 	switch(tz){
 		case 'WE0':
 			ntgmt = '0';
@@ -1345,12 +1345,12 @@ function tzset(tz) {
 
 
 function tzmiset(offset) {
-    if(offset=='nil'){ return 'nil'; }
+  if(offset=='nil'){ return 'nil'; }
 	ntgmt = offset;
 }
 
 function tzcityset(city) {
-    if (city=='nil'){ return 'nil'; }
+  if (city=='nil'){ return 'nil'; }
 	var arr = [
 		{city:'beijing',offset:'480'},
 		{city:'hongkong',offset:'480'},
