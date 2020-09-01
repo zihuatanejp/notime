@@ -796,25 +796,26 @@ function objtostrts(objts) {
 	}
 
 	
-	if( (objts.dd) && (objts.dd!='00') ){
-		objts.dd = ( parseInt(objts.dd)-1).toString();
-		if(objts.dd.length==1){
-			objts.dd = '0'+objts.dd; 
-		}
+	var dd = String(objts.dd)
+  	if (dd && dd != '00') {
+    	dd = (parseInt(dd) - 1).toString()
+    if (dd.length == 1) {
+      	dd = '0' + dd
+    }
 
-		xxxmdh = { dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
+    xxxmdh = {dd: dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
 		
-		xxdh = rolltoms(xxxmdh);
-		xxxmdh = ut.bnplus(xxmm,xxdh); 
+	xxdh = rolltoms(xxxmdh);
+	xxxmdh = ut.bnplus(xxmm,xxdh); 
 		
-		if(tsnega){
-			if(isrunxxyy){
-				xxxmdh = ut.bnminus('31622400000',xxxmdh);
-			}
-			else{
-				xxxmdh = ut.bnminus('31536000000',xxxmdh);
-			}
+	if(tsnega){
+		if(isrunxxyy){
+			xxxmdh = ut.bnminus('31622400000',xxxmdh);
 		}
+		else{
+			xxxmdh = ut.bnminus('31536000000',xxxmdh);
+		}
+	}
 		
 		strts = ut.bnplus(strts,xxxmdh);
 	}
@@ -863,7 +864,7 @@ function objtostrts(objts) {
 					break;
 				}
 			}
-			numtr = numtr.substr(ind);
+			numtr = numtr.substring(ind);
 		}
 		return numtr;	
 	}
@@ -1156,7 +1157,7 @@ function rolltoms(o) {
 					break;
 				}
 			}
-			numtr = numtr.substr(ind);
+			numtr = numtr.substring(ind);
 		}
 		return numtr;	
 	}
@@ -1394,7 +1395,7 @@ function bnplus(a1,a2){
 					secnum = parseInt(ar1[i])+parseInt(ar2[j])+carryflag;
 					secstr = secnum.toString();
 					if(secstr.length>1){
-						secstr = secstr.substr(-1);
+						secstr = secstr.substring(secstr.length-1);
 						carryflag = 1;
 					}
 					else{
@@ -1417,7 +1418,7 @@ function bnplus(a1,a2){
 				}
 				else{
 					if(secstr.length>1){
-						secstr = secstr.substr(-1);
+						secstr = secstr.substring(secstr.length-1);
 						carryflag = 1;
 					}
 					else{
@@ -1570,7 +1571,7 @@ function bnminus(a1,a2) {
 				break;
 			}
 		}
-		rstr = rstr.substr(ind);
+		rstr = rstr.substring(ind);
 	}	
 	return rstr;
 }
@@ -1617,8 +1618,8 @@ function bnmultip(a1,a2){
 							carryflag = 0;
 						}
 						else{
-							carryflag = cellstr.substr(0,1);
-							cellstr = cellstr.substr(-1);
+							carryflag = cellstr.substring(0,1);
+							cellstr = cellstr.substring(cellstr.length-1);
 						}
 					}
 					secstr = cellstr+secstr;
