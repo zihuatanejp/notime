@@ -99,7 +99,7 @@ function bnplus(a1, a2) {
               secnum = parseInt(ar1[i]) + parseInt(ar2[j]) + carryflag;
               secstr = secnum.toString();
               if (secstr.length > 1) {
-                secstr = secstr.substr(-1);
+                secstr = secstr.substring(secstr.length - 1);
                 carryflag = 1;
               } else {
                 carryflag = 0;
@@ -119,8 +119,8 @@ function bnplus(a1, a2) {
               rstr = secstr + rstr;
             } else {
               if (secstr.length > 1) {
-                secstr = secstr.substr(-1);
-                carryflag = 1;
+                secstr = secstr.substring(secstr.length-1);
+						carryflag = 1;
               } else {
                 carryflag = 0;
               }
@@ -939,15 +939,15 @@ function objtostrts(objts) {
       xxmm = mm12;
       break;
   }
-
-  if (objts.dd && objts.dd != "00") {
-    objts.dd = (parseInt(objts.dd) - 1).toString();
-    if (objts.dd.length == 1) {
-      objts.dd = "0" + objts.dd;
+  var dd = String(objts.dd);
+  if (dd && dd != '00') {
+    dd = (parseInt(dd) - 1).toString();
+    if (dd.length == 1) {
+      dd = '0' + dd;
     }
 
     xxxmdh = {
-      dd: objts.dd,
+      dd: dd,
       hh: objts.hh,
       mi: objts.mi,
       ss: objts.ss,
@@ -1009,7 +1009,7 @@ function objtostrts(objts) {
           break;
         }
       }
-      numtr = numtr.substr(ind);
+      numtr = numtr.substring(ind);
     }
     return numtr;
   }
@@ -1314,7 +1314,7 @@ function rolltoms(o) {
           break;
         }
       }
-      numtr = numtr.substr(ind);
+      numtr = numtr.substring(ind);
     }
     return numtr;
   }
@@ -1655,8 +1655,8 @@ function bnmultip(a1, a2) {
             if (j == 0) {
               carryflag = 0;
             } else {
-              carryflag = cellstr.substr(0, 1);
-              cellstr = cellstr.substr(-1);
+              carryflag = cellstr.substring(0, 1);
+              cellstr = cellstr.substring(cellstr.length - 1);
             }
           }
           secstr = cellstr + secstr;
