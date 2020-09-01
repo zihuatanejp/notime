@@ -1612,7 +1612,7 @@ function bnminus(a1, a2) {
         break;
       }
     }
-    rstr = rstr.substr(ind);
+    rstr = rstr.substring(ind);
   }
   return rstr;
 }
