@@ -731,8 +731,6 @@ function objtostrts(objts) {
 		}
 	}
 
-
-	
 	var mm02 = '2678400000';
 	var mm03 = '5097600000';
 	var mm04 = '7776000000';
@@ -796,26 +794,26 @@ function objtostrts(objts) {
 	}
 
 	
-	var dd = String(objts.dd)
-  	if (dd && dd != '00') {
-    	dd = (parseInt(dd) - 1).toString()
+	var dd = String(objts.dd);
+	if (dd && dd != '00') {
+		dd = (parseInt(dd) - 1).toString();
     if (dd.length == 1) {
-      	dd = '0' + dd
-    }
+			dd = '0' + dd;
+		}
 
     xxxmdh = {dd: dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
 		
-	xxdh = rolltoms(xxxmdh);
-	xxxmdh = ut.bnplus(xxmm,xxdh); 
+		xxdh = rolltoms(xxxmdh);
+		xxxmdh = ut.bnplus(xxmm,xxdh); 
 		
-	if(tsnega){
-		if(isrunxxyy){
-			xxxmdh = ut.bnminus('31622400000',xxxmdh);
+		if(tsnega){
+			if(isrunxxyy){
+				xxxmdh = ut.bnminus('31622400000',xxxmdh);
+			}
+			else{
+				xxxmdh = ut.bnminus('31536000000',xxxmdh);
+			}
 		}
-		else{
-			xxxmdh = ut.bnminus('31536000000',xxxmdh);
-		}
-	}
 		
 		strts = ut.bnplus(strts,xxxmdh);
 	}

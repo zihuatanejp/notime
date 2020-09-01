@@ -660,8 +660,8 @@ function numtstotext(numts,fmt) {
 }
 
 function objtostrts(objts) { 
-    if(!objts){ return 'nil'; }
-    if( objts=='nil' ){ return 'nil' ; }
+	if(!objts){ return 'nil'; }
+	if( objts=='nil' ){ return 'nil' ; }
 	var oyy = '1970';
 	var omm = '01';
 	var strts = '0';
@@ -720,8 +720,6 @@ function objtostrts(objts) {
 	if(objts.ms.length==1){
 		objts.ms = '00'+objts.ms;		
 	}
-
-	
 
 	//先处理多少年的毫秒数 考虑闰年情况
 	if(  ut.bnabscomp(objts.yy,oyy)=='yes'  ){
@@ -871,13 +869,14 @@ function objtostrts(objts) {
 	}
 
 	//剩余的天数 小时 分钟 毫秒数
-	if( (objts.dd) && (objts.dd!='00') ){
-		objts.dd = ( parseInt(objts.dd)-1).toString();
-		if(objts.dd.length==1){
-			objts.dd = '0'+objts.dd; 
+	var dd = String(objts.dd);
+	if (dd && dd != '00') {
+		dd = (parseInt(dd) - 1).toString();
+    if (dd.length == 1) {
+			dd = '0' + dd;
 		}
 
-		xxxmdh = { dd:objts.dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
+		xxxmdh = { dd:dd, hh:objts.hh, mi:objts.mi, ss:objts.ss, ms:objts.ms }; 
 		// console.log(xxxmdh);
 		xxdh = rolltoms(xxxmdh);
 		xxxmdh = ut.bnplus(xxmm,xxdh); //console.log(xxxmdh);
@@ -914,7 +913,7 @@ function objtostrts(objts) {
 	}
 	//判断是否是闰年
 	function isrunyy(yy) {
-        if(yy=='nil'){ return ; }
+		if(yy=='nil'){ return ; }
 		var runyy = false;
 		if ( iszhenbai(cuyy)=='no' ){
 			if( ut.bnmod(yy,'4')=='0' ){
@@ -931,7 +930,7 @@ function objtostrts(objts) {
 
 	//前面全是零的情况
 	function cutzero(numtr) {
-        if( numtr=='nil' ){ return 'nil' ; }
+		if( numtr=='nil' ){ return 'nil' ; }
 		numtr = numtr.toString();		
 		if( (numtr.length>1)&&( numtr.charAt(0)=='0' ) ){
 			var ind =0;
@@ -945,7 +944,6 @@ function objtostrts(objts) {
 		}
 		return numtr;	
 	}
-
 	return strts;
 }
 
@@ -957,7 +955,7 @@ function numtostrts(numts) {
 
 //用于某时间点加上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
 function timeplus(ts,ms) {
-    if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
+	if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
 	if( ut.bnisnega(ms) ){
 		ms = ms.slice(1);
 	}
@@ -967,7 +965,7 @@ function timeplus(ts,ms) {
 
 //用于某时间点减上一段时间 ms数永远为正值的一段时间,不是正值会被转为正值
 function timeminus(ts,ms) {
-    if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
+	if ( (ts=='nil') ||(ms=='nil') ) { return 'nil'; }
 	var r ;
 	if( ut.bnisnega(ms) ){
 		ms = ms.slice(1);
