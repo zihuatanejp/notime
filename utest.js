@@ -9,7 +9,7 @@ log( nt.getnowts() );
 
 // 获取周几
 // nt.getweekdaybyts( nt.getnowts().strts );
-log(  nt.getweekday("2020-01-02") );
+log(  nt.getweekday("1969-12-31") );
 
 // log( ut.bnminus('11','10') );
 /*

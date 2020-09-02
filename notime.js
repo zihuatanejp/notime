@@ -58,7 +58,6 @@ getobjts: 通用时间模型之间的转换 strts -> objts
 */
 function getnowts() {
 	var tp1 = getnow();
-	var tp2;
 	if(!tp1){
 		tp1 = new Date().getTime().toString();
 	}
@@ -72,7 +71,7 @@ function getnowts() {
 
 
 function strtoobjts(ts) { 
-    if( ts == 'nil' ){ return; }
+	if( ts == 'nil' ){ return; }
 	//格式化时处理时区偏移
 	ts = tzaddoffset(ts,ntgmt); 
 
@@ -151,8 +150,6 @@ function strtoobjts(ts) {
 		res.ss = tp11.ss;
 		res.ms = tp11.ms;
 	}
-
-	
 
 	//大于1年 四年一闰年 2月29日 第一次闰年在1972年
 	//每3500年再减一日 第一次减日在4500年
@@ -1141,12 +1138,12 @@ function msconvto(ts,fmt) {
 
 	if(fmt =='ss'){
 		if( ut.bnabscomp(ts,'999') =='yes'){
-    		res.cnt = ut.bndivis( ts,'1000');
-    		res.ret = ut.bnmod(ts,'1000');
-    	}
-    	else{
-    		res.ret = ts;
-    	}
+			res.cnt = ut.bndivis( ts,'1000');
+			res.ret = ut.bnmod(ts,'1000');
+		}
+		else{
+			res.ret = ts;
+		}
 	}
 
 	if(fmt == 'mi'){
