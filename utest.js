@@ -9,78 +9,90 @@ log( nt.getnowts() );
 
 // 获取周几
 // nt.getweekdaybyts( nt.getnowts().strts );
-log(  nt.getweekday("1969-12-31") );
+log(  nt.getweekday("2020-09-17") );   // 目前支持1970-01-02 - .... 的日期
+
+// 2020 0917 问题负向时间 1969年1230有问题
 
 // log( ut.bnminus('11','10') );
-/*
+
 // 使用示例如：
 // 得到当前时间戳 
 // 10位 unix秒的时间戳
-console.log(
-	nt.getnowts().strts.substr(0,10)
-);
+// console.log(
+// 	nt.getnowts().strts.substr(0,10)
+// );
 //echo 1500618707
 // 13位 毫秒计数的时间戳
-console.log(
-	nt.getnowts().strts
-);
+// console.log(
+// 	nt.getnowts().strts
+// );
 //echo 1500618707330
 
 // 将时间戳转化指定格式的字符串
 
 // 1500618707330 -> 2017-07-21 14:31:47:330
-console.log(
-	nt.strtstotext('1500618707330')
-);
+// console.log(
+// 	nt.strtstotext('1500618707330')
+// );
 
 // 1500618707330 -> 2017-07-21
-console.log(
-	nt.strtstotext('1500618707330',{hh:false,mi:false,ss:false,ms:false})
-);
+// console.log(
+// 	nt.strtstotext('1500618707330',{hh:false,mi:false,ss:false,ms:false})
+// );
 
 // 1500618707330 -> 14:31
-console.log(
-	nt.strtstotext('1500618707330',{yy:false,mm:false,dd:false,ss:false,ms:false})
-);
+// console.log(
+// 	nt.strtstotext('1500618707330',{yy:false,mm:false,dd:false,ss:false,ms:false})
+// );
 //...
 
 // 将常用的时间形式转换为时间戳
 // 2017-07-21 -> 1500566400000
-console.log(
-	nt.convts('2017-07-21').strts
-);
+// console.log(
+// 	nt.convts('2017-07-21').strts
+// );
+// 
+// ts:2020-09-17 strts: 1600272000000
+// log( nt.convts("2020-09-17").strts, nt.convts("2020/9/17").strts );
+// log( nt.convts("1970-01-03") );
+// log( nt.convts("1970-01-02") );
+// log( nt.convts("1970-01-01") );
+// log( nt.convts("1968-2-01") );
+// log(
+//     ,nt.convts("1970-01-02"),nt.convts("1970-01-01"),nt.convts("1969-12-31")    
+// );
 
 // 2017-07-21 14:31:47 -> 1500618707000
-console.log(
-	nt.convts('2017-07-21 14:31:47').strts
-);
+// console.log(
+// 	nt.convts('2017-07-21 14:31:47').strts
+// );
 // ...
 
 //將 4分30秒转化为毫秒数
 // {mi:'04',ss:'30'} -> 270000
-console.log(
-	nt.rolltoms({mi:'04',ss:'30'})
-);
+// console.log(
+// 	nt.rolltoms({mi:'04',ss:'30'})
+// );
 //...
 
 // 把毫秒转化为时长
 // 3456532243 -> { yy:'0000', mm:'01', dd:'10', hh:'00', mi:'08', ss:'52', ms:'243' }
-console.log(
-	nt.msconv('3456532243')
-);
+// console.log(
+// 	nt.msconv('3456532243')
+// );
 // 得到多少天
 // 3456532243 （ms） -> 40 （天）
-console.log(
-	nt.msconvto('3456532243','dd').cnt
-);
+// console.log(
+// 	nt.msconvto('3456532243','dd').cnt
+// );
 
 // 把时间进行时区换算
 // 东一区 2017-05-01 10:30  ->  东八区 2017-05-01 17:30
-nt.tzset('E1');
-var e1ts = nt.convts('2017-05-01 10:30').strts;
-nt.tzset('E8');
-var e8time = nt.strtstotext(e1ts,{ss:false,ms:false});
-console.log(e8time); // 2017-05-01 17:30
+// nt.tzset('E1');
+// var e1ts = nt.convts('2017-05-01 10:30').strts;
+// nt.tzset('E8');
+// var e8time = nt.strtstotext(e1ts,{ss:false,ms:false});
+// console.log(e8time); // 2017-05-01 17:30
 // ...
 
 // 极长和极早的时间支持
@@ -104,18 +116,18 @@ console.log(
 // );
 
 // 得到最近n天的日期 
-function lastnday(n) {
-	var cuts = nt.getnowts().strts;
-	var ts, str, arr = [], cuday;
-	for(var i = 1;i<=n;i++ ){
-		cuday = i.toString();
-		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );
-		str = nt.strtstotext( ts,{hh:false,mi:false,ss:false,ms:false} );
-		// arr.push(str);
-		arr.unshift(str);
-	}
-	return arr;
-}
+// function lastnday(n) {
+// 	var cuts = nt.getnowts().strts;
+// 	var ts, str, arr = [], cuday;
+// 	for(var i = 1;i<=n;i++ ){
+// 		cuday = i.toString();
+// 		ts = nt.timeminus( cuts, nt.rolltoms({dd: cuday}) );
+// 		str = nt.strtstotext( ts,{hh:false,mi:false,ss:false,ms:false} );
+// 		// arr.push(str);
+// 		arr.unshift(str);
+// 	}
+// 	return arr;
+// }
 
 // 最近一周的日期的数组
 // console.log( lastnday(7) );

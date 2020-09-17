@@ -485,7 +485,7 @@ function convts(units) {
 	}
 	if(reok){ //console.log(objts)
 		strts = objtostrts(objts);
-		if(strts=='no'){ return 'no';}
+		if(strts=='nil'||strts=='no'){ return 'nil';}
 		res.objts= objts;
 		res.strts = strts;
 		res.numts = parseInt(strts);
@@ -721,6 +721,7 @@ function objtostrts(objts) {
 		objts.ms = '00'+objts.ms;		
 	}
 
+
 	//先处理多少年的毫秒数 考虑闰年情况
 	if(  ut.bnabscomp(objts.yy,oyy)=='yes'  ){
 		
@@ -798,7 +799,8 @@ function objtostrts(objts) {
 			cuyy = ut.bnminus(cuyy,'1');
 			xxtp = ut.bnminus(cuyy,'1');
 			strts = ut.bnplus(strts,yyms);
-			if( ut.bnabscomp( xxtp, objts.yy )=='eq' ){
+            // console.log(xxtp);
+			if( ut.bnabscomp( cuyy, objts.yy )=='eq' ){
 				flag = false;
 			}
 		}
@@ -1261,7 +1263,7 @@ function rolltoms(o) {
 
 // 获取某天的日期是星期几 
 // 输入值: "2020-07-05"
-// 返回值: 一 二 三 四 五 六 日
+// 返回值: 1 2 3 4 5 6 7 数字类型
 function getweekday(datestr) {
 	var res = weekday["datestr"];
 	if(res){
@@ -1275,13 +1277,16 @@ function getweekday(datestr) {
 }
 
 function getweekdaybyts(ts) {
+    if (ut.bnisnega(ts)){
+        return "nil";
+    }
 	var ddres = msconvto(ts,"dd");
 	if(ddres.code!="yes"){
 		return "nil";
 	}
 	var ddret = ut.bnmod(ddres.cnt,"7");
 	
-	var weeklist=[ "五", "六", "日", "一", "二", "三", "四"];
+	var weeklist=[ 5, 6, 7, 1, 2, 3, 4];
 	// console.log("天数", ddres.cnt,"余数", ddret,"星期","周"+weeklist[ddret]);
 	return weeklist[ddret];
 }
